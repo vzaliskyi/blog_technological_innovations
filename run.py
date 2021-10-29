@@ -1,10 +1,4 @@
-from flask import Flask, render_template
-
-app = Flask(__name__)
-
-@app.route('/', methods=['GET', 'POST'])
-def home():
-    return 'Hello world'
+from app import app
 
 if __name__=='__main__':
     app.run(debug=True)
