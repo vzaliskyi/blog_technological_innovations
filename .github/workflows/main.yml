@@ -13,5 +13,5 @@ jobs:
       with:
         python-root: '.'
         flake8-flags: ''
-        mypy-flags: '--ignore-patterns=/venv//*.py'
+        mypy-flags: '--disable=import-error'
         fail-on-isort: true
