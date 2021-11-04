@@ -6,10 +6,10 @@ jobs:
     name: CI workflow
     steps:
     - name: checkout source repo
-      uses: alexanderdamiani/checkout@v2
+      uses: actions/checkout@v2
 
     - name: linting
-      uses: dima-yurchuk/pylinter@v1.2.0
+      uses: alexanderdamiani/pylinter@v1.2.0
       with:
         python-root: '.'
         flake8-flags: ''
