@@ -1,0 +1,7 @@
+.title-link a {
+    color: black !important;
+    text-decoration: none;
+}
+.title-link:hover {
+  color: silver !important;
+}
