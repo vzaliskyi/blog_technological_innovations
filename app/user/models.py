@@ -15,7 +15,8 @@ class User(db.Model):
     username = db.Column(db.String(30), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
-    picture = db.Column(db.String(20), nullable=False, server_default='default.jpg')
+    picture = db.Column(db.String(20), nullable=False,
+                        server_default='default.jpg')
 
     comment = db.relationship('Comment', backref='user_br', lazy=True)
     like = db.relationship('Like', backref='user_br', lazy=True)

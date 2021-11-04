@@ -15,7 +15,8 @@ class Category(db.Model):
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=False)
+    category_id = db.Column(db.Integer, db.ForeignKey('category.id'),
+                            nullable=False)
     user_id = db.Column(db.Integer(), db.ForeignKey('user.id'))
     title = db.Column(db.String(100), nullable=False)
     content = db.Column(db.Text)
@@ -36,7 +37,8 @@ class Comment(db.Model):
     created_at = db.Column(db.Date, default=datetime.utcnow)
 
     def __repr__(self):
-        return f'<Comment {self.id} {self.user_id} {self.post_id} {self.text} >'
+        return f'<Comment {self.id} {self.user_id} {self.post_id} ' \
+               f'{self.text} >'
 
 
 class Like(db.Model):
@@ -46,4 +48,5 @@ class Like(db.Model):
     status = db.Column(db.Boolean)
 
     def __repr__(self):
-        return f'<Like {self.id} {self.user_id} {self.post_id} {self.status} >'
+        return f'<Like {self.id} {self.user_id} {self.post_id} ' \
+               f'{self.status} >'
