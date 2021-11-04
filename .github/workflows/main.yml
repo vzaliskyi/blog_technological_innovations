@@ -13,5 +13,5 @@ jobs:
       with:
         python-root: '.'
         flake8-flags: ''
-        mypy-flags: '--ignore-=venv'
+        mypy-flags: 'ignore-paths=^venv/.*$,'
         fail-on-isort: true
