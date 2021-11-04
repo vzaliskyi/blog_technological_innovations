@@ -1,41 +1,49 @@
 from app import db
-from app.user.models import User
+# from app.user.models import User
 from datetime import datetime
+
 
 class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(25), nullable=False)
-    category = db.relationship('Post', backref='post_backref', lazy=True)
+    name = db.Column(db.String(25), unique=True, nullable=False)
+
+    category = db.relationship('Post', backref='category_br', lazy=True)
 
     def __repr__(self):
         return f"Category('{self.name}'')"
 
+
 class Post(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.Integer, primary_key=True)
+    category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=False)
+    user_id = db.Column(db.Integer(), db.ForeignKey('user.id'))
     title = db.Column(db.String(100), nullable=False)
     content = db.Column(db.Text)
-    created_at = db.column(db.date, default=datetime.utcnow())
-    category_id = db.Column(db.Integer, db.ForeignKey('category.id'),nullable=False)
-    comment = db.relationship('Comment', backref='comment_backref', lazy=True)
-    like = db.relationship('Like', backref='like_backref', lazy=True)
+    created_at = db.Column(db.Date, default=datetime.utcnow())
+
+    comments = db.relationship('Comment', backref='post_br', lazy=True)
+    likes = db.relationship('Like', backref='post_br', lazy=True)
+
     def __repr__(self):
         return f'<Post {self.id} {self.title} >'
 
-class Comment(db.model):
+
+class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
-    comment = db.Column(db.String(500), nullable=False)
-    created_at = db.column(db.date, default=datetime.utcnow())
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
+    text = db.Column(db.String(500), nullable=False)
+    created_at = db.Column(db.Date, default=datetime.utcnow)
 
     def __repr__(self):
-        return f'<Comment {self.id} {self.user_id} {self.post_id} {self.comment} >'
+        return f'<Comment {self.id} {self.user_id} {self.post_id} {self.text} >'
 
-class Like(db.model):
+
+class Like(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
     status = db.Column(db.Boolean)
 
     def __repr__(self):
-        return f'<Comment {self.id} {self.user_id} {self.post_id} {self.status} >'
+        return f'<Like {self.id} {self.user_id} {self.post_id} {self.status} >'
