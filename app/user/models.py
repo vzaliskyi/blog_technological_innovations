@@ -1,6 +1,4 @@
 from app import db, bcrypt
-from app.blog.models import Post, Category, Comment, Like
-from flask_login import UserMixin
 
 
 class User(db.Model):
