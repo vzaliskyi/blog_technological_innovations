@@ -1,4 +1,3 @@
-# pylint: disable=E401, E402
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
@@ -8,8 +7,8 @@ app.config.from_object('config')
 db = SQLAlchemy(app)
 bcrypt = Bcrypt()
 
-from .blog import blog_bp
-from .user import user_bp
+from .blog import blog_bp  # pylint: disable=import-error
+from .user import user_bp  # pylint: disable=import-error
 app.register_blueprint(blog_bp, url_prefix='')
 app.register_blueprint(user_bp, url_prefix='auth')
 
