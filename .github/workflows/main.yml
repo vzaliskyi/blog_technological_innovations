@@ -13,5 +13,5 @@ jobs:
       with:
         python-root: '.'
         flake8-flags: ''
-        mypy-flags: '--disable=import-error'
+        mypy-flags: '--ignore=__init__.py'
         fail-on-isort: true
