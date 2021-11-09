@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{%from "_render_field.html" import render_field%}
+
+{% block content %}
+<br>
+ <div class="form-login" align="center">
+      <form method="POST" action="{{ url_for('user_bp_in.login') }}">
+                 {{form.csrf_token}}
+          {{ render_field(form.username, class="form-control", placeholder="username") }}
+          {{ render_field(form.password, class="form-control", placeholder="password") }}
+          <br>
+          {{ form.submit(class="btn btn-dark btn-lg") }}<br><br>
+      </form>
+ </div>
+<div class="text_info" align="center">
+            <small class="text-muted">Повернутися на <a href="{{ url_for('home') }}">головну</a></small>
+</div>
+{% endblock content %}

@@ -1,11 +1,13 @@
-from app import db, bcrypt
+from app.blog.models import Comment, Like, Post
+from app import db, bcrypt, login_manager
+from flask_login import UserMixin
 
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
 
-class User(db.Model):
+class User(db.Model, UserMixin):
 
     def __init__(self, username, email, password, *args, **kwargs):
         super(User, self).__init__(*args, **kwargs)
@@ -24,5 +26,7 @@ class User(db.Model):
     like = db.relationship('Like', backref='user_br', lazy=True)
     posts = db.relationship('Post', backref='user_br', lazy=True)
 
+    def veryfy_password(self, pwd):
+        return bcrypt.check_password_hash(self.password, pwd)
     def __repr__(self):
         return f"User('{self.username}', '{self.email}')"

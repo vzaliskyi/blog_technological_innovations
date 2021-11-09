@@ -39,8 +39,12 @@
           </form>
         </div>
         <div class="navbar-nav">
-          <a class="nav-item nav-link rounded" href="">Увійти</a>
-          <a class="nav-item nav-link rounded" href="">Зареєструватись</a>
+          {%if current_user.is_authenticated%}
+          <a class="nav-item nav-link rounded"  href={{url_for('user_bp_in.logout')}}>Вихід</a>
+          {%else%}
+          <a class="nav-item nav-link rounded" href={{url_for('user_bp_in.login')}}>Увійти</a>
+          <a class="nav-item nav-link rounded" href={{url_for('user_bp_in.register')}}>Зареєструватись</a>
+          {%endif%}
         </div>
     </div>
   </nav>
