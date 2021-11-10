@@ -6,3 +6,53 @@
 .title-link:hover {
   color: silver !important;
 }
+
+body {
+  background-color: #F5F5F5; !important;
+}
+
+.btn-outline-secondary:hover{
+     background: #708090; !important;
+}
+
+.article-section {
+  background: white;
+  padding: 10px 20px;
+  border: 2px solid black;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+a.author-name{
+  color: #A9A9A9;
+  text-decoration: none;
+  margin-right: 2px;
+}
+
+a.author-name:hover{
+  color: 68cbd0;
+}
+
+a.article-title{
+  color: #030303;
+  text-decoration: none;
+}
+
+a.article-title:hover {
+  color: #417477;
+}
+
+.article-content {
+  white-space: pre-line;
+}
+
+.article-metadata {
+  padding-bottom: 1px;
+  margin-bottom: 3px;
+  border-bottom: 1px solid #e3e3e3;
+}
+
+.article-metadata a:hover {
+  color: #333;
+  text-decoration: none;
+}
