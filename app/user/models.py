@@ -1,5 +1,6 @@
 from app.blog.models import Comment, Like, Post
-from app import db, bcrypt, login_manager
+from app import db, bcrypt, login_manager, app
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask_login import UserMixin
 
 
@@ -29,6 +30,19 @@ class User(db.Model, UserMixin):
 
     def verify_password(self, pwd):
         return bcrypt.check_password_hash(self.password, pwd)
+
+    def get_reset_token(self, expires_sec=900):
+        s_obj = Serializer(app.config['SECRET_KEY'], expires_sec)
+        return s_obj.dumps({'user_id': self.id}).decode('utf-8')
+
+    @staticmethod
+    def verify_reset_token(token):
+        s_obj = Serializer(app.config['SECRET_KEY'])
+        try:
+            user_id = s_obj.loads(token)['user_id']
+        except:
+            return None
+        return User.query.get(user_id)
 
     def __repr__(self):
         return f"User('{self.username}', '{self.email}')"

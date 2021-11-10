@@ -1,10 +1,11 @@
 from .models import User
 from . import user_bp
-from app import db
-from .forms import LoginForm, RegistrationForm
+from app import db, bcrypt, mail
+from .forms import (LoginForm, RegistrationForm,
+                    RequestPasswordResetForm, ResetPasswordForm)
 from flask import render_template, redirect, url_for, flash, request
 from flask_login import login_user, current_user, logout_user, login_required
-
+from flask_mail import Message
 
 @user_bp.route('/login', methods=['GET', 'POST'])
 def login():
@@ -67,3 +68,52 @@ def logout():
 @login_required
 def account():
     return render_template('account.html')
+
+
+def send_reset_token_to_email(user):
+    token = user.get_reset_token()
+    msg = Message('Запит на скидання паролю',
+                  sender='noreply@demo.com',
+                  recipients=[user.email])
+    msg.body = f'''Щоб скинути пароль, перейдіть за наступним посиланням:
+{url_for('user_bp_in.reset_password', token=token, _external=True)}
+Якщо ви не подавали запит на зміну паролю - проігноруйте дане повідомлення'''
+    mail.send(msg)
+
+
+@user_bp.route("/reset_password", methods=['GET', 'POST'])
+def request_password_reset():
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+    form = RequestPasswordResetForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        send_reset_token_to_email(user)
+        flash('Лист з посиланням на відновлення паролю було надіслано на '
+              'вашу пошту', 'info')
+        return redirect(url_for('user_bp_in.login'))
+    return render_template('request_password_reset.html', form=form)
+
+
+@user_bp.route("/reset_password/<token>", methods=['GET', 'POST'])
+def reset_password(token):
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+    user = User.verify_reset_token(token)
+    if user is None:
+        flash('Посилання на зміну паролю більше не активне', 'warning')
+        return redirect(url_for('request_password_reset'))
+    form = ResetPasswordForm()
+    if form.validate_on_submit():
+        user.password = bcrypt.generate_password_hash(
+            form.new_password.data).decode('utf-8')
+        db.session.commit()
+        try:
+            db.session.commit()
+            flash('Ваш пароль оновлено!', 'success')
+        except:
+            db.session.rollback()
+            flash('Трапилась помилка. От халепа!', 'danger')
+
+        return redirect(url_for('user_bp_in.login'))
+    return render_template('reset_password.html', form=form)
