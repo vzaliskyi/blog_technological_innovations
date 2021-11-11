@@ -11,8 +11,8 @@ bcrypt = Bcrypt()
 login_manager = LoginManager(app)
 mail = Mail(app)
 
-from .blog import blog_bp  # pylint: disable=import-error
-from .user import user_bp  # pylint: disable=import-error
+from .blog import blog_bp  # linting: disable=E402
+from .user import user_bp  # linting: disable=E402
 app.register_blueprint(blog_bp, url_prefix='')
 app.register_blueprint(user_bp, url_prefix='/auth')
 
