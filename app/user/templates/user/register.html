@@ -1,22 +1,26 @@
 {% extends "base.html" %}
-{%from "_render_field.html" import render_field%}
-
 {% block content %}
-<br>
- <div class="form-login" align="center">
-      <form method="POST" action="{{ url_for('user_bp_in.register') }}">
-                 {{form.csrf_token}}
-           {{ render_field(form.username, class="form-control", placeholder="username") }}
-           {{ render_field(form.email, class="form-control", placeholder="email") }}
-          {{ render_field(form.password, class="form-control", placeholder="password") }}
-          {{ render_field(form.confirm_password, class="form-control", placeholder="confirm password") }}
-          <br>
-          {{ form.submit(class="btn btn-dark btn-lg") }}<br><br>
-      </form>
- </div>
-<div class="text_info" align="center">
-        <small class="text-muted">Уже зареєстровані? <a href="{{ url_for('user_bp_in.login') }}">Вхід</a></small>
-        <br>
-        <small class="text-muted">Повернутися на <a href="{{ url_for('home') }}">головну</a></small>
-</div>
+  {% from "_render_field.html" import render_field_lr %}
+  <div class="content-section form-control pb-2 ">
+    <form method="POST" action="{{ url_for('user_bp_in.register') }}" class="pt-1 pb-3" >
+
+      {{form.csrf_token}}
+      <fieldset class="form-group">
+        <legend class="border-bottom mb-4">Реєстрація</legend>
+        {{ render_field_lr(form.username) }}
+        {{ render_field_lr(form.email) }}
+        {{ render_field_lr(form.password) }}
+        {{ render_field_lr(form.confirm_password) }}
+      </fieldset>
+      <div class="form-group pt-4 pb-2">
+        {{ form.submit(class="btn btn-outline-secondary") }}
+      </div>
+
+    </form>
+    <div class="border-top pt-2">
+      <small class="text-muted">
+        Уже є аккаунт? <a class="ml-2" href="{{ url_for('user_bp_in.login') }}">Увійти</a>
+      </small>
+     </div>
+  </div>
 {% endblock content %}

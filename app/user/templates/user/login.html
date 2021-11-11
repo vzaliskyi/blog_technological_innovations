@@ -1,18 +1,37 @@
 {% extends "base.html" %}
-{%from "_render_field.html" import render_field%}
-
 {% block content %}
-<br>
- <div class="form-login" align="center">
-      <form method="POST" action="{{ url_for('user_bp_in.login') }}">
-                 {{form.csrf_token}}
-          {{ render_field(form.username, class="form-control", placeholder="username") }}
-          {{ render_field(form.password, class="form-control", placeholder="password") }}
-          <br>
-          {{ form.submit(class="btn btn-dark btn-lg") }}<br><br>
-      </form>
- </div>
-<div class="text_info" align="center">
-            <small class="text-muted">Повернутися на <a href="{{ url_for('home') }}">головну</a></small>
-</div>
+  {% from "_render_field.html" import render_field_lr %}
+  <div class="content-section form-control pb-2 ">
+
+    <form method="post" action="{{ url_for('user_bp_in.login', next=request.args.get('next')) }}" enctype="multipart/form-data" class="pt-1 pb-2">
+      {{form.csrf_token}}
+
+      <fieldset class="form-group">
+        <legend class="border-bottom mb-4">Вхід</legend>
+
+        {{ render_field_lr(form.email) }}
+        {{ render_field_lr(form.password) }}
+
+        <div class="form-check">
+          {{ form.remember(class="form-check-input") }}
+          {{ form.remember.label(class="form-check-label") }}
+        </div>
+
+      </fieldset>
+
+      <div class="form-group pt-2 pb-2">
+        {{ form.submit(class="btn btn-outline-secondary") }}
+      </div>
+
+      <small class="text-muted pb-2">
+        <a href="{{ url_for('user_bp_in.request_password_reset') }}">Забули пароль?</a>
+      </small>
+    </form>
+
+     <div class="border-top pt-2">
+        <small class="text-muted">
+          Немає аккаунту? <a class="ml-2" href="{{ url_for('user_bp_in.register') }}">Зареєструватися</a>
+        </small>
+     </div>
+  </div>
 {% endblock content %}
