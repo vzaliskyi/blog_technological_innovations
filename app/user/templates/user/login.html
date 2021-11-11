@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
   {% from "_render_field.html" import render_field_lr %}
-  <div class="content-section form-control pb-2">
+  <div class="content-section form-control pb-2" style="margin:auto;width:35%">
 
     <form method="post" action="{{ url_for('user_bp_in.login', next=request.args.get('next')) }}" enctype="multipart/form-data" class="pt-1 pb-2">
       {{form.csrf_token}}
