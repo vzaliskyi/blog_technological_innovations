@@ -5,8 +5,7 @@
   <div class="content-section" align="center">
     <div class="card d-inline-flex p-2 bd-highlight">
       <div class="media">
-        <img src="{{ url_for('static', filename='profile_pictures/default.png') }}"
-            alt="Profile picture" class="rounded-circle account-img">
+        <img src="{{user_img}}" class="rounded-circle account-img" alt="Profile-image">
         <div class="card-body">
             <h5 class="card-title">{{ current_user.username }}</h5>
             <mark><em class="card-title text-muted">{{ current_user.email }}</em></mark>

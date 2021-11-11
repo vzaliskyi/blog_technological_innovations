@@ -7,6 +7,7 @@ from flask import render_template, redirect, url_for, flash, request
 from flask_login import login_user, current_user, logout_user, login_required
 from flask_mail import Message
 
+
 @user_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
@@ -21,7 +22,6 @@ def login():
                 flash(f'Користувач успішно увійшов у свій аккаунт!', 'success')
                 next_page = request.args.get('next')
                 print('next post', next_page)
-
                 if next_page:
                     return redirect(next_page)
                 return redirect(url_for('user_bp_in.account'))
@@ -67,7 +67,9 @@ def logout():
 @user_bp.route("/account")
 @login_required
 def account():
-    return render_template('account.html')
+    user_img = url_for('static',
+                       filename='profile_pictures/' + current_user.picture)
+    return render_template('account.html', user_img=user_img)
 
 
 def send_reset_token_to_email(user):

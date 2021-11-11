@@ -56,3 +56,7 @@ a.article-title:hover {
   color: #333;
   text-decoration: none;
 }
+.rounded-circle{
+  wigth:150px;
+  height:150px;
+}
