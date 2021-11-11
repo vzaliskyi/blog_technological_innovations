@@ -16,5 +16,5 @@ from .user import user_bp  # pylint: disable=import-error
 app.register_blueprint(blog_bp, url_prefix='')
 app.register_blueprint(user_bp, url_prefix='/auth')
 
-from app import views  # noqa # pylint: disable=unused-import
-from app import forms  # noqa # pylint: disable=unused-import
+from app import views  # linting: disable=unused-import
+from app import forms  # linting: disable=unused-import
