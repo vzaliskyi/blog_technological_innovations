@@ -15,3 +15,4 @@ jobs:
         flake8-flags: '--ignore=E402 ./app/__init__.py'
         mypy-flags: ''
         fail-on-isort: true
+        skip-flake8: true
