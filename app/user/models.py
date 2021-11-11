@@ -18,13 +18,17 @@ class User(db.Model, UserMixin):# type: ignore
         self.password = bcrypt.generate_password_hash(password).decode('utf-8')
 
     id = db.Column(db.Integer, primary_key=True)# type: ignore
-    username = db.Column(db.String(30), unique=True, nullable=False)# type: ignore
-    email = db.Column(db.String(50), unique=True, nullable=False)# type: ignore
-    password = db.Column(db.String(30), nullable=False)# type: ignore
+    username = db.Column(db.String(30), unique=True, nullable=False)
+    # type: ignore
+    email = db.Column(db.String(50), unique=True, nullable=False)
+    # type: ignore
+    password = db.Column(db.String(30), nullable=False)
+    # type: ignore
     picture = db.Column(db.String(20), nullable=False,
                         server_default='default.jpg')# type: ignore
 
-    comment = db.relationship('Comment', backref='user_br', lazy=True)# type: ignore
+    comment = db.relationship('Comment', backref='user_br', lazy=True)
+    # type: ignore
     like = db.relationship('Like', backref='user_br', lazy=True)# type: ignore
     posts = db.relationship('Post', backref='user_br', lazy=True)# type: ignore
 
