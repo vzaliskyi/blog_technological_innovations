@@ -13,5 +13,3 @@ jobs:
       with:
         python-root: '.'
         flake8-flags: '--count --show-source --statistics --ignore=E402,F401,F722,F541,E126,E722'
-        mypy-flags: ''
-        fail-on-isort: true
