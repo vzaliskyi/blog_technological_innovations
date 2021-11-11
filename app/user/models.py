@@ -9,7 +9,7 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
-class User(db.Model, UserMixin):# type: ignore
+class User(db.Model, UserMixin):  # type: ignore
 
     def __init__(self, username, email, password, *args, **kwargs):
         super(User, self).__init__(*args, **kwargs)
@@ -17,7 +17,7 @@ class User(db.Model, UserMixin):# type: ignore
         self.email = email
         self.password = bcrypt.generate_password_hash(password).decode('utf-8')
 
-    id = db.Column(db.Integer, primary_key=True)# type: ignore
+    id = db.Column(db.Integer, primary_key=True)  # type: ignore
     username = db.Column(db.String(30), unique=True, nullable=False)
     # type: ignore
     email = db.Column(db.String(50), unique=True, nullable=False)
@@ -25,12 +25,14 @@ class User(db.Model, UserMixin):# type: ignore
     password = db.Column(db.String(30), nullable=False)
     # type: ignore
     picture = db.Column(db.String(20), nullable=False,
-                        server_default='default.jpg')# type: ignore
+                        server_default='default.jpg')  # type: ignore
 
     comment = db.relationship('Comment', backref='user_br', lazy=True)
     # type: ignore
-    like = db.relationship('Like', backref='user_br', lazy=True)# type: ignore
-    posts = db.relationship('Post', backref='user_br', lazy=True)# type: ignore
+    like = db.relationship('Like', backref='user_br', lazy=True)
+    # type: ignore
+    posts = db.relationship('Post', backref='user_br', lazy=True)
+    # type: ignore
 
     def verify_password(self, pwd):
         return bcrypt.check_password_hash(self.password, pwd)
