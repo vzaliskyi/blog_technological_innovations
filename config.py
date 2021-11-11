@@ -13,4 +13,3 @@ MAIL_PORT = 587
 MAIL_USE_TLS = True
 MAIL_USERNAME = 'team3member@gmail.com'
 MAIL_PASSWORD = 'tiMa$232'
-

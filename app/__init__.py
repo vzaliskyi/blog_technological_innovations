@@ -11,10 +11,10 @@ bcrypt = Bcrypt()
 login_manager = LoginManager(app)
 mail = Mail(app)
 
-from .blog import blog_bp  # linting: disable=E402
-from .user import user_bp  # linting: disable=E402
+from .blog import blog_bp  # noqa: E402
+from .user import user_bp  # noqa: E402
 app.register_blueprint(blog_bp, url_prefix='')
 app.register_blueprint(user_bp, url_prefix='/auth')
 
-from app import views
-from app import forms
+from app import views  # noqa # linting: disable=unused-import
+from app import forms  # noqa # linting: disable=unused-import
