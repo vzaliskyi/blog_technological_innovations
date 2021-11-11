@@ -15,7 +15,7 @@ class Category(db.Model):  # type: ignore
         return f"Category('{self.name}'')"
 
 
-class Post(db.Model): # type: ignore
+class Post(db.Model):  # type: ignore
     id = db.Column(db.Integer, primary_key=True)  # type: ignore
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'),
                             nullable=False)  # type: ignore
