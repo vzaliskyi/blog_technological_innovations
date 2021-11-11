@@ -12,6 +12,6 @@ jobs:
       uses: alexanderdamiani/pylinter@v1.2.0
       with:
         python-root: '.'
-        flake8-flags: '--ignore=E402,F401'
+        flake8-flags: '--ignore=E402 ./app/__init__.py'
         mypy-flags: ''
         fail-on-isort: true
