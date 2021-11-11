@@ -13,4 +13,5 @@ jobs:
       with:
         python-root: '.'
         flake8-flags: '--count --show-source --statistics --ignore=E402,F401,F722,F541,E126,E722'
+        mypy-flags: '--ignore-missing-imports --exclude=app/blog/models.py'
         fail-on-isort: true
