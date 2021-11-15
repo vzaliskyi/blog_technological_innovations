@@ -32,8 +32,8 @@ class BaseTestCase(TestCase):
         response = self.client.get('/auth/register')
         self.assertEqual(response.status_code, 200)
         self.assertTrue('<legend class="border-bottom '
-                        'mb-4">Реєстрація</legend>' in response.get_data(
-            as_text=True))
+                        'mb-4">Реєстрація</legend>' in
+                        response.get_data(as_text=True))
         response = self.client.post('/auth/register',
                                     data={'username': 'unittester1',
                                           'email': 'team3member@gmail.com',
