@@ -59,6 +59,7 @@ def register():
 
 
 @user_bp.route('/logout')
+@login_required
 def logout():
     logout_user()
     flash('Ви вийшли зі свого облікового запису', 'info')
@@ -68,10 +69,8 @@ def logout():
 @user_bp.route("/account")
 @login_required
 def account():
-    user_img = url_for('static',
-                       filename='profile_pictures/' + current_user.picture)
     posts = Post.query.filter_by(user_id=current_user.id)
-    return render_template('account.html', user_img=user_img, posts=posts)
+    return render_template('account.html', posts=posts)
 
 
 def send_reset_token_to_email(user):

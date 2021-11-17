@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block main %}
+  {% from "_render_field.html" import render_field_lr %}
+
+  <div class="card p-2" style="margin:auto;width:60%">
+    <div align="center">
+      <legend class="border-bottom mb-4">Категорія <b class="text-lowercase">{{posts.first().category_br.name}}</b></legend>
+    </div>
+        {% include "posts_list.html" %}
+  </div>
+
+{% endblock main %}
