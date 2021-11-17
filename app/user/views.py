@@ -1,4 +1,5 @@
 from .models import User
+from app.user.models import Post
 from . import user_bp
 from app import db, bcrypt, mail
 from .forms import (LoginForm, RegistrationForm,
@@ -69,7 +70,8 @@ def logout():
 def account():
     user_img = url_for('static',
                        filename='profile_pictures/' + current_user.picture)
-    return render_template('account.html', user_img=user_img)
+    posts = Post.query.filter_by(user_id=current_user.id)
+    return render_template('account.html', user_img=user_img, posts=posts)
 
 
 def send_reset_token_to_email(user):

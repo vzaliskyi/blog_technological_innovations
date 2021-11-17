@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block main %}
+  {% from "_render_field.html" import render_field_lr %}
+  <div class="content-section form-control pb-2" style="margin:auto;width:65%">
+
+    <form method="post" enctype="multipart/form-data" class="pt-1 pb-2">
+      {{form.csrf_token}}
+
+      <fieldset class="form-group">
+        <legend class="border-bottom mb-4">Оновити публікацію огляду</legend>
+
+        {{ render_field_lr(form.category) }}
+        {{ render_field_lr(form.title) }}
+        {{ form.content.label }}
+        {{ form.content(id='editor') }}
+
+      </fieldset>
+
+      <div class="form-group pt-2 pb-2">
+        {{ form.submit(class="btn btn-outline-secondary") }}
+      </div>
+    </form>
+  </div>
+<script>
+     $(document).ready(function() {
+     $('#editor').summernote({height: 150});
+     });
+</script>
+{% endblock main %}
+

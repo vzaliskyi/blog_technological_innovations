@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block content %}
+{% block main %}
   {% from "_render_field.html" import render_field_lr %}
 
   <div class="content-section" align="center">
@@ -10,7 +10,10 @@
             <h5 class="card-title">{{ current_user.username }}</h5>
             <mark><em class="card-title text-muted">{{ current_user.email }}</em></mark>
         </div>
+        {% for post in posts%}
+        <p><a href={{url_for('blog_bp_in.post_view', post_id=post.id)}}>{{post.title}}</a></p>
+        {% endfor %}
       </div>
     </div>
   </div>
-{% endblock content %}
+{% endblock main %}

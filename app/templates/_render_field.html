@@ -23,7 +23,7 @@
 
     {% if field.errors %}
       <div class="form-control is-invalid">
-        {{ field }}
+        {{ field(id='editor') }}
       </div>
       <div class="invalid-feedback">
         {% for error in field.errors %}
