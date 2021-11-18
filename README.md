@@ -13,6 +13,8 @@
 * Roadmap - https://drive.google.com/file/d/1OBWLyoox4YvS2Rc_xrFGwUw-fkbWV745/view?usp=sharing
 * Estimates - https://docs.google.com/spreadsheets/d/1b2Ev-5K4YolZTeYkVMPcZzPE_FU_9bCz62ri6uFccoI/edit?usp=sharing
 * CI server -  https://app.circleci.com/pipelines/github/dima-yurchuk/blog_technological_innovations
+* Architectural diagram -  https://drive.google.com/file/d/137Cw_mAKtq2IZ_AVsyWadZNN4FSjOYEO/view?usp=sharing
+* ER-diagram -  https://drive.google.com/file/d/1bN7CuCRblA6oAfSTkFle_BEPFeQRkJja/view
 
 ## Code styling:
 У python коді старатися дотримуєтися стандарту PEP-8:
