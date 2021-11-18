@@ -22,7 +22,7 @@ def login():
                 login_user(user_in_db, remember=form.remember.data)
                 flash(f'Користувач успішно увійшов у свій аккаунт!', 'success')
                 next_page = request.args.get('next')
-                print('next post', next_page)
+                # print('next post', next_page)
                 if next_page:
                     return redirect(next_page)
                 return redirect(url_for('user_bp_in.account'))
@@ -42,7 +42,7 @@ def register():
         return redirect(url_for('home'))
     form = RegistrationForm()
     if form.validate_on_submit():
-        print(form.username.data, form.email.data, form.password.data)
+        # print(form.username.data, form.email.data, form.password.data)
         user = User(username=form.username.data, email=form.email.data,
                     password=form.password.data)
         try:
@@ -63,7 +63,7 @@ def register():
 def logout():
     logout_user()
     flash('Ви вийшли зі свого облікового запису', 'info')
-    return redirect(url_for("home"))
+    return redirect(url_for('user_bp_in.login'))
 
 
 @user_bp.route("/account")
