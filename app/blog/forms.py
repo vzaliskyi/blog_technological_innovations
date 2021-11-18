@@ -1,7 +1,23 @@
-from .models import Category
+from .models import Category, Post
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, SelectField, TextAreaField
+from wtforms import (StringField, SubmitField, SelectField, TextAreaField,
+                     ValidationError)
 from wtforms.validators import DataRequired, Length
+import re
+
+
+# def title_duplicate(form, field):
+#     if Post.query.filter_by(title=field.data).first():
+#         raise ValidationError('Ви вже створювали публікацію з такою самою '
+#                               'назвою!')
+
+
+def check_text_length(form, field):
+    clean_text = re.sub(re.compile('<.*?>'), '', field.data)
+    length = len(clean_text)
+    if length < 15:
+        raise ValidationError('Текст повинен бути довжиною від 15 символів ('
+                              'у вас - {})'.format(length))
 
 
 class FormPostCreate(FlaskForm):
@@ -11,19 +27,22 @@ class FormPostCreate(FlaskForm):
     )
     title = StringField(
         "Заголовок",
-        validators=[Length(min=1, max=100,
-                           message='Поле повинно бути довжиною '
-                                   'від 1 до 100 симолів!'),
-                    DataRequired(message='Заповніть це поле!')]
+        validators=[Length(min=5, max=100,
+                           message='Заголовок повинен бути довжиною '
+                                   'від 5 до 100 симолів!'),
+                    DataRequired(message='Публікація повинна мати заголовок')]
     )
     content = TextAreaField(
-        'Контент',
-        validators=[
-            DataRequired()
-        ],
+        'Вміст',
+        validators=[check_text_length],
         # render_kw={'cols':35, 'rows': 5}
     )
     submit = SubmitField('Створити')
+
+    def validate_title(self, field):
+        if Post.query.filter_by(title=field.data).first():
+            raise ValidationError(
+                'Ви вже створювали публікацію з такою самою назвою!')
 
     @classmethod
     def new(cls):
@@ -42,19 +61,23 @@ class FormPostUpdate(FlaskForm):
     )
     title = StringField(
         "Заголовок",
-        validators=[Length(min=1, max=100,
-                           message='Поле повинно бути довжиною '
-                                   'від 1 до 100 симолів!'),
-                    DataRequired(message='Заповніть це поле!')]
+        validators=[Length(min=5, max=100,
+                           message='Заголовок повинен бути довжиною '
+                                   'від 5 до 100 симолів!'),
+                    DataRequired(message='Публікація повинна мати заголовок')]
     )
     content = TextAreaField(
-        'Контент',
-        validators=[
-            DataRequired()
-        ],
+        'Вміст',
+        validators=[check_text_length],
         # render_kw={'cols':35, 'rows': 5}
     )
+
     submit = SubmitField('Оновити')
+
+    def validate_title(self, field):
+        if Post.query.filter_by(title=field.data).first():
+            raise ValidationError(
+                'Ви вже створювали публікацію з такою самою назвою!')
 
     @classmethod
     def new(cls):

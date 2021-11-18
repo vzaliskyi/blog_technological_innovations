@@ -1,0 +1,4 @@
+{% from "_render_field.html" import render_post_item %}
+{% for post in posts %}
+   {{ render_post_item(post) }}
+{% endfor %}

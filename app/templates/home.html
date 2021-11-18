@@ -1,36 +1,6 @@
 {% extends "base.html" %}
-
 {% block main %}
-  <article class="media article-section">
-    <div class="media-body">
-      <div class="article-metadata">
-        <a class="author-name" href="#"> Автор</a>
-        <small class="text-muted"> 09.11.2021 </small>
-      </div>
-      <h2><a class="article-title" href="#"> Заголовок </a></h2>
-      <p class="article-content"> *зміст публікації* </p>
-    </div>
-  </article>
-
-  <article class="media article-section">
-    <div class="media-body">
-      <div class="article-metadata">
-        <a class="author-name" href="#"> Автор</a>
-        <small class="text-muted"> 09.11.2021 </small>
-      </div>
-      <h2><a class="article-title" href="#"> Заголовок </a></h2>
-      <p class="article-content"> *зміст публікації* </p>
-    </div>
-  </article>
-
-  <article class="media article-section">
-    <div class="media-body">
-      <div class="article-metadata">
-        <a class="author-name" href="#"> Автор</a>
-        <small class="text-muted"> 09.11.2021 </small>
-      </div>
-      <h2><a class="article-title" href="#"> Заголовок </a></h2>
-      <p class="article-content"> *зміст публікації* </p>
-    </div>
-  </article>
+  <div style="margin:auto;width:60%">
+    {% include "posts_list.html" %}
+  </div>
 {% endblock main %}

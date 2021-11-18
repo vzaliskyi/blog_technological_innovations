@@ -1,18 +1,48 @@
 {% extends "base.html" %}
 {% block main %}
-<article class="media article-section" style="margin:auto;width:65%">
-    <div class="media-body">
-      <div class="article-metadata">
-        <a class="author-name" href="#"> {{user.username}}</a>
-        <small class="text-muted">{{post.created_at}} </small>
+
+  <div class="card mb-3 post-section" style="overflow:auto;margin:auto;width:70%">
+    <div class="card-header light-silver-bg">
+      <h3 class="text-center mb-0">{{post.title}}</h3>
+      {% if current_user.id == post.user_id %}
+        <div class="align-left">
+          <a href="{{url_for('blog_bp_in.post_update', post_id=post.id)}}" class="btn btn-secondary ml-4 " role="button" data-bs-toggle="tooltip" title="Редагувати"><i class="bi bi-pencil-square"></i></a>
+          <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" title="Видалити"><i class="bi bi-trash-fill"></i></button>
+        </div>
+      {% endif %}
+      <div class="align-right mb-0">
+        <small class="text-muted fst-italic">{{post.created_at}}</small>
       </div>
-      <h2><a class="article-title" href="#"> {{post.title}} </a></h2>
-      <p class="article-content"> {{post.content|safe}} </p>
     </div>
-    {% if current_user.id == post.user_id %}
-        <a href="{{url_for('blog_bp_in.post_update', post_id=post.id)}}" class="btn btn-secondary btn-lg" tabindex="-1" role="button" aria-disabled="true">Редагувати</a>
-        <a href="{{url_for('blog_bp_in.post_delete', post_id=post.id)}}" class="btn  btn-danger fs-5"> Видалити </a>
-    {% endif %}
-  </article>
+    <div class="card-body text-dark ">
+      <div class="card-text text-break">{{post.content|safe}}</div>
+    </div>
+    <div class="card-footer light-silver-bg">
+      <img src="{{url_for('static',filename='profile_pictures/' + post.user_br.picture)}}" class="rounded-circle post-author-img" alt="author-image">
+      <a class="post-author-name" href="{{url_for('blog_bp_in.user_posts', user_id=post.user_br.id)}}"> {{post.user_br.username}}</a>&nbsp;&nbsp;
+      <a href="#" class="link-dark">#{{ post.category_br.name }}</a>
+    </div>
+  </div>
+
+
+  <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteModalLabel">Підтвердження</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Ви впевнені, що хочете видалити цю публікацію?
+        </div>
+        <div class="modal-footer">
+          {% if current_user.id == post.user_id %}
+            <a href="{{url_for('blog_bp_in.post_delete', post_id=post.id)}}" class="btn btn-danger"> Так, видалити </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
 {% endblock main %}
 

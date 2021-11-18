@@ -8,7 +8,7 @@
 }
 
 body {
-  background-color: #F5F5F5; !important;
+  background-color: #f5f5f5; !important;
 }
 
 .btn-outline-secondary:hover{
@@ -34,6 +34,7 @@ a.author-name:hover{
 }
 
 a.article-title{
+  font-size: 25px;
   color: #464033;
   text-decoration: none;
 }
@@ -52,11 +53,59 @@ a.article-title:hover {
   border-bottom: 1px solid #e3e3e3;
 }
 
-.article-metadata a:hover {
-  color: #333;
-  text-decoration: none;
+.profile-img{
+  height: 150px;
+  width: 150px;
+  border: 1px solid #7E7C73;
 }
-.rounded-circle{
-  wigth:150px;
-  height:150px;
+
+
+.post-section {
+  background: white;
+  border: 2px solid #7E7C73;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+
+.post-author-img {
+  height: 35px;
+  width: 35px;
+  margin-right: 3px;
+  border: 1px solid #7E7C73;
+}
+
+a.post-author-name{
+  font-size: 20px;
+  color: #171717;
+  text-decoration: none;
+  margin-right: 2px;
+}
+
+a.post-author-name:hover{
+  color: #454545;
+}
+
+a.post-created-at{
+  font-size: 12px;
+  text-decoration: none;
+  margin-right: 2px;
+}
+
+.align-left{
+float:left;
+}
+
+.align-right{
+float:right;
+}
+
+.author-img {
+  height: 65px;
+  width: 65px;
+  border: 2px solid #7E7C73;
+}
+
+.light-silver-bg {
+    background: #f8f8ff;
 }

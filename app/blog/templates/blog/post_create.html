@@ -1,18 +1,17 @@
 {% extends "base.html" %}
 {% block main %}
-  {% from "_render_field.html" import render_field_lr %}
-  <div class="content-section form-control pb-2" style="margin:auto;width:65%">
+  {% from "_render_field.html" import render_field_lr, render_editor_field %}
+  <div class="content-section form-control pb-2" style="margin:auto;width:70%" >
 
     <form method="post" action="{{ url_for('blog_bp_in.post_create', next=request.args.get('next')) }}" enctype="multipart/form-data" class="pt-1 pb-2">
       {{form.csrf_token}}
 
       <fieldset class="form-group">
-        <legend class="border-bottom mb-4">Створити публікацію огляду</legend>
+        <legend class="border-bottom mb-4">Створити нову публікацію</legend>
 
         {{ render_field_lr(form.category) }}
         {{ render_field_lr(form.title) }}
-        {{ form.content.label }}
-        {{ form.content(id='editor') }}
+        {{ render_editor_field(form.content) }}
 
       </fieldset>
 
