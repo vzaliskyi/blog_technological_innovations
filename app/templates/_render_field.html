@@ -6,7 +6,7 @@
 
     {% if field.errors %}
       <div class="form-control is-invalid">
-        {{ field(class="form-control", id='editor') }}
+        {{ field(class="form-control") }}
       </div>
       <div class="invalid-feedback">
         {% for error in field.errors %}
@@ -15,6 +15,27 @@
       </div>
      {% else %}
         {{ field(class="form-control") }}
+    {% endif %}
+  </div>
+{% endmacro %}
+
+{% macro render_editor_field(field) %}
+  <div class="form-group" style="size:35%">
+    <div class="form-control-label">
+      {{ field.label }}
+    </div>
+
+    {% if field.errors %}
+      <div class="form-control is-invalid">
+        {{ field(class="form-control", id="editor") }}
+      </div>
+      <div class="invalid-feedback">
+        {% for error in field.errors %}
+          <li>{{ error }}</li>
+        {% endfor %}
+      </div>
+     {% else %}
+        {{ field(class="form-control", id="editor") }}
     {% endif %}
   </div>
 {% endmacro %}
@@ -39,3 +60,4 @@
     </div>
   </article>
 {% endmacro %}
+

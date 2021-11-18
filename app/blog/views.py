@@ -40,35 +40,32 @@ def post_create():
 def post_update(post_id):
     form = FormPostUpdate.new()
     post = Post.query.get_or_404(post_id)
-    if current_user.id == post.user_id:
-        if request.method == 'GET':  # якщо ми відкрили сторнку
-            # для редагування, записуємо у поля форми значення з БД
-            form.category.data = post.category_br.id
-            form.title.data = post.title
-            form.content.data = post.content
-            return render_template('post_update.html',
-                                   title='Оновити публікацію', form=form)
-        else:  # інакше якщо ми змінили дані і натиснули кнопку
-            if form.validate_on_submit():
-                category_id = form.category.data
-                post.category_id = db.session.query(Category.id).filter(
-                    Category.id == category_id)
-                post.title = form.title.data
-                post.content = form.content.data
-                try:
-                    db.session.commit()
-                    flash('Публікація успішно оновлена', 'info')
-                except:
-                    db.session.rollback()
-                    flash('Помилка при оновленні публікації', 'danger')
-                return redirect(url_for('user_bp_in.account'))
-            else:
-                flash('Помилка валідації', 'danger')
-                # url_for('blog_bp_in.post_update', post_id=post_id)
-                return redirect(f'/post/{post_id}/update')
-    else:
-        flash('Ви не маєте прав на редагування даної публікації', 'danger')
-        return redirect(url_for('user_bp_in.account'))
+    if current_user.id != post.user_id:
+        abort(403, description="Ви не маєте прав на редагування даної "
+                               "публікації")
+
+    if form.validate_on_submit():
+        category_id = form.category.data
+        post.category_id = db.session.query(Category.id).filter(
+            Category.id == category_id)
+        post.title = form.title.data
+        post.content = form.content.data
+        try:
+            db.session.commit()
+            flash('Публікація успішно оновлена', 'info')
+            return redirect(
+                url_for('blog_bp_in.post_view', post_id=post_id))
+        except:
+            db.session.rollback()
+            flash('Помилка при оновленні публікації', 'danger')
+
+    elif request.method == 'GET':  # якщо ми відкрили сторнку
+        # для редагування, записуємо у поля форми значення з БД
+        form.category.data = post.category_br.id
+        form.title.data = post.title
+        form.content.data = post.content
+    return render_template('post_update.html',
+                           title='Оновити публікацію', form=form)
 
 
 @blog_bp.route('/post/<int:post_id>/delete', methods=["GET", "POST"])
