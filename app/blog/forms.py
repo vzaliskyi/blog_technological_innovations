@@ -44,13 +44,19 @@ class FormPostCreate(FlaskForm):
             raise ValidationError(
                 'Ви вже створювали публікацію з такою самою назвою!')
 
+    def validate_category(self, field):
+        if field.data == 0:
+            raise ValidationError('Ви не обрали категорію!')
+
     @classmethod
     def new(cls):
         # Instantiate the form
         form = cls()
         # Update the choices for the agency field
-        form.category.choices = [(elem.id, elem.name) for elem in
-                                 Category.query.all()]
+        choices_list = [(elem.id, elem.name) for elem in
+                        Category.query.all()]
+        choices_list.insert(0, (0, 'Оберіть категорію'))
+        form.category.choices = choices_list
         return form
 
 
@@ -73,11 +79,6 @@ class FormPostUpdate(FlaskForm):
     )
 
     submit = SubmitField('Оновити')
-
-    def validate_title(self, field):
-        if Post.query.filter_by(title=field.data).first():
-            raise ValidationError(
-                'Ви вже створювали публікацію з такою самою назвою!')
 
     @classmethod
     def new(cls):

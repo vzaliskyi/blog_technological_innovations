@@ -5,7 +5,7 @@ from flask import render_template
 
 @app.route('/')
 def home():
-    print("all_posts")
+    # print("all_posts")
     # posts = Post.query.order_by().desc()
     posts = Post.query.order_by(Post.created_at.desc())
     # posts = Post.query.all()
