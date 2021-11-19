@@ -7,7 +7,7 @@ from flask import redirect, url_for, flash, request, render_template, abort
 from flask_login import current_user, login_required
 
 
-@blog_bp.route('/post_create', methods=['GET', 'POST'])
+@blog_bp.route('/post/create', methods=['GET', 'POST'])
 @login_required
 def post_create():
     form = FormPostCreate.new()
@@ -81,11 +81,11 @@ def post_delete(post_id):
             flash('Помилка при видаленні публікації', 'danger')
         return redirect(url_for('user_bp_in.account'))
     else:
-        flash('Ви не маєте прав на видалення даної публікації', 'danger')
-        return redirect(url_for('user_bp_in.account'))
+        abort(403, description="Ви не маєте прав на видалення даної "
+                               "публікації")
 
 
-@blog_bp.route('/post_view/<int:post_id>')
+@blog_bp.route('/post/<int:post_id>/view')
 def post_view(post_id):
     post = Post.query.get_or_404(post_id)
     return render_template('post_view.html', post=post)
