@@ -1,67 +1,169 @@
-from flask_testing import TestCase
 import unittest
+from flask_testing import TestCase
 from app import db, app
-from app.user.models import User
+# from flask import url_for
+# from app.user.models import User
 
 
 class BaseTestCase(TestCase):
+    app.config.update(SQLALCHEMY_DATABASE_URI='sqlite:///testing.db',
+                      SECRET_KEY='asfdsfsaaffdf', WTF_CSRF_ENABLED=False)
+    db.drop_all()
+    db.create_all()
+
     def create_app(self):
-        app.config.update(SQLALCHEMY_DATABASE_URI='sqlite:///testing.db',
-                          SECRET_KEY='asfdsfsaaffdf')
-        db.create_all()
         return app
-
-    def setUp(self):
-        db.create_all()
-        db.session.add(User(username='tester007',
-                            email='tester007@gmail.com', password='12345qaZ@'))
-        db.session.commit()
-        app.config['WTF_CSRF_ENABLED'] = False
-
-    def tearDown(self):
-        db.session.remove()
-        db.drop_all()
 
     def test1_home_page(self):
         response = self.client.get('/', content_type='html/text')
         self.assertEqual(response.status_code, 200)
         self.assertIn(b'TechBlog', response.data)
-        # print('-test1_home_page is done')
+        self.assertTrue('Категорії' in response.get_data(as_text=True))
 
-    def test2_user_registration(self):
-        response = self.client.get('/auth/register')
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue('<legend class="border-bottom '
-                        'mb-4">Реєстрація</legend>' in
-                        response.get_data(as_text=True))
-        response = self.client.post('/auth/register',
-                                    data={'username': 'unittester1',
-                                          'email': 'team3member@gmail.com',
-                                          'password': '12345qaZ!',
-                                          'confirm_password': '12345qaZ!'},
-                                    follow_redirects=True)
-        self.assertEqual(response.status_code, 200)
+    # перевірка неавторизованого користувача
+    def test2_access_for_unauth_user(self):
+        response = self.client.get('/', content_type='html/text')
+        self.assert200(response)
         self.assertTrue(
-            'Користувач unittester1 успішно зареєстрований!'
-            in response.get_data(as_text=True))
+            '<i class="bi bi-box-arrow-in-right"></i> <b>Увійти</b>'
+            in response.get_data(as_text=True)
+        )
+        self.assertFalse(
+            '<i class="bi bi-person-circle"></i> Мій профіль</a>'
+            in response.get_data(as_text=True)
+        )
+        self.assert401(self.client.get('auth/account'))
+        self.assert401(self.client.get('post_create'))
 
-    def test3_user_login(self):
+    # перевірка успішної реєстрації користувача
+    def test3_user_successful_registration(self):
+        with self.client:
+            response = self.client.get('/auth/register')
+            self.assert200(response)
+            self.assertTrue('<legend class="border-bottom '
+                            'mb-4">Реєстрація</legend>' in
+                            response.get_data(as_text=True))
+            response = self.client.post('/auth/register',
+                                        data={'username': 'unit_tester1',
+                                              'email': 'team3member@gmail.com',
+                                              'password': '12345qaZ!',
+                                              'confirm_password': '12345qaZ!'},
+                                        follow_redirects=True)
+            self.assertEqual(response.status_code, 200)
+            self.assertMessageFlashed('Користувач unit_tester1 успішно '
+                                      'зареєстрований!', category='success')
+            self.assert401(self.client.get('auth/account'))
+
+    # перевірка сценарію неуспішної реєстрації користувача
+    def test4_user_unsuccessful_registration(self):
+        with self.client:
+            response = self.client.get('/auth/register')
+            self.assert200(response)
+            self.assertTrue('<legend class="border-bottom '
+                            'mb-4">Реєстрація</legend>' in
+                            response.get_data(as_text=True))
+            # передаємо невірні значення полів
+            response = self.client.post('/auth/register',
+                                        data={'username': 'unit_tester1',
+                                              'email': 'team3membergmail.com',
+                                              'password': 'qwert',
+                                              'confirm_password': 'qwer'},
+                                        follow_redirects=True)
+            self.assertEqual(response.status_code, 200)
+            # та опісля перевіряємо роботу валідаторів
+            self.assertTrue('Користувач з таким іменем уже зареєстрований!'
+                            in response.get_data(as_text=True))
+            self.assertTrue('Некоректна email адреса!'
+                            in response.get_data(as_text=True))
+            self.assertTrue('Поле повинно бути довжиною від 3 до 30 симолів!'
+                            in response.get_data(as_text=True))
+            self.assertTrue('Пароль повинен містити великі та малі літери'
+                            in response.get_data(as_text=True))
+            self.assertTrue('Пароль повинен містити цифру'
+                            in response.get_data(as_text=True))
+            self.assertTrue(
+                'Пароль повинен містити символ(не літеру і не цифру)'
+                in response.get_data(as_text=True)
+            )
+            self.assertTrue('Паролі не збігаються!'
+                            in response.get_data(as_text=True))
+            self.assert401(self.client.get('auth/account'))
+
+    # перевірка успшної авторизації користувача
+    def test5_user_successful_login(self):
         with self.client:
             response = self.client.get('/auth/login')
-            self.assertEqual(response.status_code, 200)
+            # response = self.client.get(url_for('user_bp_in.login'))
+            self.assert200(response)
             self.assertTrue(
                 '<legend class="border-bottom mb-4">Вхід</legend>' in
                 response.get_data(as_text=True))
             response = self.client.post('/auth/login',
-                                        data={'email': 'tester007@gmail.com',
-                                              'password': '12345qaZ@'},
+                                        data={'email': 'team3member@gmail.com',
+                                              'password': '12345qaZ!'},
                                         follow_redirects=True)
-            self.assertEqual(response.status_code, 200)
-            response = self.client.get('auth/account')
+            self.assert200(response)
+            # redirect_url = url_for('/auth/login', next='/auth/account')
+            # self.assertRedirects(response, redirect_url)
+            self.assertMessageFlashed('Користувач успішно увійшов у свій '
+                                      'аккаунт!', category='success')
             self.assertTrue(
-                '<em class="card-title text-muted">tester007@gmail.com</em>'
+                '<legend class="border-bottom mb-4">Інформація '
+                'про мене</legend>' in response.get_data(as_text=True)
+            )
+            self.assertTrue(
+                '<em class="card-title text-muted">team3member@gmail.com</em>'
+                in response.get_data(as_text=True)
+            )
+            # користувач тепер має доступ до сторінки аккаунту
+            self.assert200(self.client.get('auth/account'))
+
+    # перевірка сценарію неуспішної авторизації
+    def test6_user_unsuccessful_login(self):
+        with self.client:
+            response = self.client.get('/auth/login')
+            # response = self.client.get(url_for('user_bp_in.login'))
+            self.assert200(response)
+            self.assertTrue(
+                '<legend class="border-bottom mb-4">Вхід</legend>' in
+                response.get_data(as_text=True))
+            # якщо користувач вводить емейл, який не зареєстроваинй на сайті
+            response = self.client.post('/auth/login',
+                                        data={'email': 'team33memb@gmail.com',
+                                              'password': '12345qaZ!'},
+                                        follow_redirects=True)
+            self.assert200(response)
+            self.assertMessageFlashed('Користувач із вказаним емейлом не '
+                                      'зареєстрований на сайті.',
+                                      category='danger')
+            self.assertFalse(
+                '<legend class="border-bottom mb-4">Інформація '
+                'про мене</legend>' in response.get_data(as_text=True))
+            self.assertFalse(
+                '<em class="card-title text-muted">team3member@gmail.com</em>'
                 in response.get_data(as_text=True))
+            self.assert401(self.client.get('auth/account'))
+
+            # якщо користувач вводить просто некоректний емейл
+            response = self.client.post('/auth/login',
+                                        data={'email': 'team3membergmail.com',
+                                              'password': '12345q!'},
+                                        follow_redirects=True)
+            self.assert200(response)
+            self.assertTrue('Некоректна email адреса!'
+                            in response.get_data(as_text=True))
+            self.assert401(self.client.get('auth/account'))
+
+            # якщо користувач вводить невірний пароль
+            response = self.client.post('/auth/login',
+                                        data={'email': 'team3member@gmail.com',
+                                              'password': '12345q!'},
+                                        follow_redirects=True)
+            self.assert200(response)
+            self.assertMessageFlashed('Введено невірний пароль.',
+                                      category='danger')
+            self.assert401(self.client.get('auth/account'))
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()
