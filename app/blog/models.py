@@ -42,7 +42,7 @@ class Post(db.Model):  # type: ignore
             Like.status == False).count()
 
     def get_like_percentage(self):
-        num_of_rates = self.total_likes()+self.total_dislikes()
+        num_of_rates = self.total_likes() + self.total_dislikes()
         print('get_like_percentage')
         if num_of_rates == 0:
             return 50
