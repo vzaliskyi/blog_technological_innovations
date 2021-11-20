@@ -9,6 +9,7 @@ class Category(db.Model):  # type: ignore
     # type: ignore
 
     category = db.relationship('Post', backref='category_br', lazy=True)
+
     # type: ignore
 
     def __repr__(self):
@@ -27,7 +28,18 @@ class Post(db.Model):  # type: ignore
     comments = db.relationship('Comment', backref='post_br', lazy=True)
     # type: ignore
     likes = db.relationship('Like', backref='post_br', lazy=True)
+
     # type: ignore
+
+    def total_likes(self):
+        return Like.query.filter(
+            Like.post_id == self.id,
+            Like.status == True).count()
+
+    def total_dislikes(self):
+        return Like.query.filter(
+            Like.post_id == self.id,
+            Like.status == False).count()
 
     def __repr__(self):
         return f'<Post {self.id} {self.title} >'

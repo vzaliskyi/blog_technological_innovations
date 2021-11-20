@@ -10,6 +10,13 @@
           <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" title="Видалити"><i class="bi bi-trash-fill"></i></button>
         </div>
       {% endif %}
+        <div class="align-left">
+          <a href="{{ url_for('blog_bp_in.rate_action', post_id=post.id, action='like') }}" id='like-btn' class="bi" style="color:green">{{post.total_likes()}}</a>
+          <a href="{{ url_for('blog_bp_in.rate_action', post_id=post.id, action='dislike') }}" id='dislike-btn' class="bi" style="color:red">{{post.total_dislikes()}}</a>
+
+
+
+        </div>
       <div class="align-right mb-0">
         <small class="text-muted fst-italic">{{post.created_at}}</small>
       </div>
@@ -44,5 +51,24 @@
     </div>
   </div>
 
+<script>
+  $(document).ready(function(){
+    {% if current_user.get_rate_status666(post) %}
+      $("#like-btn").addClass('bi-hand-thumbs-up-fill');
+    {% else %}
+      $("#like-btn").addClass('bi-hand-thumbs-up');
+    {% endif %}
+
+    {% if current_user.get_rate_status666(post) == false %}
+      $("#dislike-btn").addClass('bi-hand-thumbs-down-fill');
+    {% elif current_user.get_rate_status666(post) == true %}
+      $("#dislike-btn").addClass('bi-hand-thumbs-down');
+    {% else %}
+      $("#dislike-btn").addClass('bi-hand-thumbs-down');
+    {% endif %}
+
+  });
+</script>
 {% endblock main %}
+
 
