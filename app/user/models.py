@@ -96,7 +96,5 @@ class User(db.Model, UserMixin):  # type: ignore
             Like.user_id == self.id,
             Like.post_id == post.id).count() > 0
 
-
-
     def __repr__(self):
         return f"User('{self.username}', '{self.email}')"
