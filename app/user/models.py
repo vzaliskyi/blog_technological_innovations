@@ -70,12 +70,7 @@ class User(db.Model, UserMixin):  # type: ignore
     def change_rate(self, post):
         print('change_rate')
         rate = Like.query.filter_by(user_id=self.id, post_id=post.id).first()
-        if rate.status:
-            print('change_rate False')
-            rate.status = False
-        else:
-            print('change_rate True')
-            rate.status = True
+        rate.status = not rate.status
 
     def unrate_post(self, post):
         print('unrate_post')
@@ -84,23 +79,16 @@ class User(db.Model, UserMixin):  # type: ignore
                 user_id=self.id,
                 post_id=post.id).delete()
 
-    # чи ставив користувач лайки/дизлайки
+    # що поставив користувач? користувач лайки/дизлайки
     def get_rate_status(self, post):
         print('get_rate_status')
-        rate = Like.query.filter(
-            Like.user_id == self.id,
-            Like.post_id == post.id).first().status
-        return rate
-
-    def get_rate_status666(self, post):
-        print('get_rate_status666')
-        if self.is_rated_post(post):
+        if not self.is_rated_post(post):
+            return None
+        else:
             rate = Like.query.filter(
                 Like.user_id == self.id,
                 Like.post_id == post.id).first().status
             return rate
-        else:
-            return None
 
     def is_rated_post(self, post):
         print('is_rated_post')
@@ -108,21 +96,6 @@ class User(db.Model, UserMixin):  # type: ignore
             Like.user_id == self.id,
             Like.post_id == post.id).count() > 0
 
-    #
-    # def is_rated_post(self, post):
-    #     rate = Like.query.filter(
-    #         Like.user_id == self.id,
-    #         Like.post_id == post.id)
-    #     if rate.count() == 0:
-    #         return False, None
-    #     elif rate.count() == 1:
-    #         return True, rate.status
-
-    # def unlike_post(self, post):
-    #     self.unrate_post(post)
-    #
-    # def undislike_post(self, post):
-    #     self.unrate_post(post)
 
 
     def __repr__(self):

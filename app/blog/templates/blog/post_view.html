@@ -3,19 +3,19 @@
 
   <div class="card mb-3 post-section" style="overflow:auto;margin:auto;width:70%">
     <div class="card-header light-silver-bg">
-      <h3 class="text-center mb-0">{{post.title}}</h3>
       {% if current_user.id == post.user_id %}
         <div class="align-left">
-          <a href="{{url_for('blog_bp_in.post_update', post_id=post.id)}}" class="btn btn-secondary ml-4 " role="button" data-bs-toggle="tooltip" title="Редагувати"><i class="bi bi-pencil-square"></i></a>
-          <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" title="Видалити"><i class="bi bi-trash-fill"></i></button>
+          <a href="{{url_for('blog_bp_in.post_update', post_id=post.id)}}" class="btn btn-secondary ml-4 btn-sm" role="button" data-bs-toggle="tooltip" title="Редагувати"><i class="bi bi-pencil-square"></i></a>&nbsp;
+          <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal" title="Видалити"><i class="bi bi-trash-fill"></i></button>
         </div>
       {% endif %}
+      <h3 class="text-center mb-0">{{post.title}}</h3>
         <div class="align-left">
-          <a href="{{ url_for('blog_bp_in.rate_action', post_id=post.id, action='like') }}" id='like-btn' class="bi" style="color:green">{{post.total_likes()}}</a>
-          <a href="{{ url_for('blog_bp_in.rate_action', post_id=post.id, action='dislike') }}" id='dislike-btn' class="bi" style="color:red">{{post.total_dislikes()}}</a>
-
-
-
+          <a href="{{ url_for('blog_bp_in.rate_action', post_id=post.id, action='like') }}" id='like-btn' class="bi">{{post.total_likes()}}</a>
+          <a href="{{ url_for('blog_bp_in.rate_action', post_id=post.id, action='dislike') }}" id='dislike-btn' class="bi">{{post.total_dislikes()}}</a>
+          <div class="progress" style="height: 2px;">
+            <div id='likes-percentage' class="progress-bar" role="progressbar" style="background-color:#212529;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
         </div>
       <div class="align-right mb-0">
         <small class="text-muted fst-italic">{{post.created_at}}</small>
@@ -53,20 +53,32 @@
 
 <script>
   $(document).ready(function(){
-    {% if current_user.get_rate_status666(post) %}
-      $("#like-btn").addClass('bi-hand-thumbs-up-fill');
-    {% else %}
+    // якщо поточний користувач не авторизований або ж даний пост у нього не оцінений
+    {% if not current_user.is_authenticated or current_user.is_rated_post(post) == false %}
+      // то виводимо 'неактивні' кнопки
       $("#like-btn").addClass('bi-hand-thumbs-up');
-    {% endif %}
-
-    {% if current_user.get_rate_status666(post) == false %}
-      $("#dislike-btn").addClass('bi-hand-thumbs-down-fill');
-    {% elif current_user.get_rate_status666(post) == true %}
       $("#dislike-btn").addClass('bi-hand-thumbs-down');
+      // якщо користувач - автор даного поста - отже він не може оцінювати його - робимо кнопки неклікабельними
+      {% if current_user.id == post.user_id %}
+        console.log('ELIF');
+        $("#like-btn").addClass('bi-hand-thumbs-up').click(function(evt){evt.preventDefault();});
+        $("#dislike-btn").addClass('bi-hand-thumbs-down').click(function(evt){evt.preventDefault();});
+      {% endif %}
+
+    // якщо користувач авторизований, і даний пост у нього вже є оцінений, то
     {% else %}
-      $("#dislike-btn").addClass('bi-hand-thumbs-down');
+      // робимо відповідну кнопку активною, а іншу позначаємо як неактивну
+      {% if current_user.get_rate_status(post) == true %}
+        $("#like-btn").addClass('bi-hand-thumbs-up-fill');
+        $("#dislike-btn").addClass('bi-hand-thumbs-down');
+      {% else %}
+        $("#like-btn").addClass('bi-hand-thumbs-up');
+        $("#dislike-btn").addClass('bi-hand-thumbs-down-fill');
+      {% endif %}
+
     {% endif %}
 
+    $("#likes-percentage").attr("style", "width:{{post.get_like_percentage()}}%; background-color:#212529;");
   });
 </script>
 {% endblock main %}

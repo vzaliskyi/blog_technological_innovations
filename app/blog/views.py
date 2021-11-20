@@ -91,11 +91,14 @@ def post_view(post_id):
     return render_template('post_view.html', post=post)
 
 
-@blog_bp.route('/post/<int:post_id>/rate/<action>')
+@blog_bp.route('/post/<int:post_id>/<action>')
 @login_required
 def rate_action(post_id, action):
     post = Post.query.get_or_404(post_id)
-    print('post:', post)
+
+    if current_user.id == post.user_id:
+        abort(403, description="Ви не можете оцінювати власні публікації")
+
     if action == 'like':
         # якщо пост не був оцінений до цього
         if current_user.is_rated_post(post) is False:

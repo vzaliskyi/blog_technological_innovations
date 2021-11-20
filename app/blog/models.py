@@ -41,6 +41,14 @@ class Post(db.Model):  # type: ignore
             Like.post_id == self.id,
             Like.status == False).count()
 
+    def get_like_percentage(self):
+        num_of_rates = self.total_likes()+self.total_dislikes()
+        print('get_like_percentage')
+        if num_of_rates == 0:
+            return 50
+        else:
+            return int(self.total_likes() / num_of_rates * 100)
+
     def __repr__(self):
         return f'<Post {self.id} {self.title} >'
 

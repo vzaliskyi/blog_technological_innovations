@@ -109,3 +109,37 @@ float:right;
 .light-silver-bg {
     background: #f8f8ff;
 }
+
+#like-btn{
+    color: #212529;
+    text-decoration: none;
+}
+
+#like-btn:hover{
+    color: #8c97a2;
+
+}
+
+#like-btn:active{
+    color: #d2d7db;
+
+}
+
+#dislike-btn{
+    color: #212529;
+    text-decoration: none;
+}
+
+#dislike-btn:hover{
+    color: #8c97a2;
+
+}
+
+#dislike-btn:active{
+    color: #d2d7db;
+
+}
+
+.is-disabled {
+  cursor: not-allowed;
+}
