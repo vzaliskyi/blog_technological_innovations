@@ -28,9 +28,6 @@ def post_create():
             db.session.rollback()
             flash('Помилка при додаванні публікації до бази даних', 'danger')
             return redirect(url_for('blog_bp_in.post_create'))
-    # elif request.method == 'POST':
-    #     flash(form.errors, 'danger')
-    #     return redirect(url_for('blog_bp_in.post_create'))
     return render_template('post_create.html', form=form,
                            title='Створення публікації')
 

@@ -11,7 +11,7 @@
       {% endif %}
       <h3 class="text-center mb-0">{{post.title}}</h3>
         <div class="align-left">
-          <a href="{{ url_for('blog_bp_in.rate_action', post_id=post.id, action='like') }}" id='like-btn' class="bi">{{post.total_likes()}}</a>
+          <a href="{{ url_for('blog_bp_in.rate_action', post_id=post.id, action='like') }}" id='like-btn' class="bi" data-toggle="tooltip" title="">{{post.total_likes()}}</a>
           <a href="{{ url_for('blog_bp_in.rate_action', post_id=post.id, action='dislike') }}" id='dislike-btn' class="bi">{{post.total_dislikes()}}</a>
           <div class="progress" style="height: 2px;">
             <div id='likes-percentage' class="progress-bar" role="progressbar" style="background-color:#212529;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
@@ -56,24 +56,24 @@
     // якщо поточний користувач не авторизований або ж даний пост у нього не оцінений
     {% if not current_user.is_authenticated or current_user.is_rated_post(post) == false %}
       // то виводимо 'неактивні' кнопки
-      $("#like-btn").addClass('bi-hand-thumbs-up');
-      $("#dislike-btn").addClass('bi-hand-thumbs-down');
+      $("#like-btn").addClass('bi-hand-thumbs-up').prop('title', 'Мені подобається');
+      $("#dislike-btn").addClass('bi-hand-thumbs-down').prop('title', 'Мені не подобається');
       // якщо користувач - автор даного поста - отже він не може оцінювати його - робимо кнопки неклікабельними
       {% if current_user.id == post.user_id %}
         console.log('ELIF');
-        $("#like-btn").addClass('bi-hand-thumbs-up').click(function(evt){evt.preventDefault();});
-        $("#dislike-btn").addClass('bi-hand-thumbs-down').click(function(evt){evt.preventDefault();});
+        $("#like-btn").addClass('bi-hand-thumbs-up').prop('title', 'Мені подобається').click(function(evt){evt.preventDefault();});
+        $("#dislike-btn").addClass('bi-hand-thumbs-down').prop('title', 'Мені не подобається').click(function(evt){evt.preventDefault();});
       {% endif %}
 
     // якщо користувач авторизований, і даний пост у нього вже є оцінений, то
     {% else %}
       // робимо відповідну кнопку активною, а іншу позначаємо як неактивну
       {% if current_user.get_rate_status(post) == true %}
-        $("#like-btn").addClass('bi-hand-thumbs-up-fill');
-        $("#dislike-btn").addClass('bi-hand-thumbs-down');
+        $("#like-btn").addClass('bi-hand-thumbs-up-fill').prop('title', 'Більше не подобається');
+        $("#dislike-btn").addClass('bi-hand-thumbs-down').prop('title', 'Мені не подобається');
       {% else %}
-        $("#like-btn").addClass('bi-hand-thumbs-up');
-        $("#dislike-btn").addClass('bi-hand-thumbs-down-fill');
+        $("#like-btn").addClass('bi-hand-thumbs-up').prop('title', 'Мені подобається');
+        $("#dislike-btn").addClass('bi-hand-thumbs-down-fill').prop('title', 'Мені не подобається');
       {% endif %}
 
     {% endif %}
