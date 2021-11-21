@@ -32,6 +32,7 @@ class User(db.Model, UserMixin):  # type: ignore
     like = db.relationship('Like', backref='user_br', lazy=True)
     # type: ignore
     posts = db.relationship('Post', backref='user_br', lazy=True)
+
     # type: ignore
 
     def verify_password(self, pwd):
@@ -49,6 +50,51 @@ class User(db.Model, UserMixin):  # type: ignore
         except:
             return None
         return User.query.get(user_id)
+
+    # #/#/#/#/#/#/#/#/#/#/#/#/#/#/#/#/#/#/#/#/#/#/#/#/#/#/#/#/#/#/
+    # методи для опрацювання ставлення лайків/дизлайків на пост
+    def like_post(self, post):
+        print('like_post')
+        if not self.is_rated_post(post):
+            like = Like(user_id=self.id, post_id=post.id, status=True)
+            db.session.add(like)
+            print('like_post +')
+
+    def dislike_post(self, post):
+        print('dislike_post')
+        if not self.is_rated_post(post):
+            like = Like(user_id=self.id, post_id=post.id, status=False)
+            db.session.add(like)
+            print('dislike_post +')
+
+    def change_rate(self, post):
+        print('change_rate')
+        rate = Like.query.filter_by(user_id=self.id, post_id=post.id).first()
+        rate.status = not rate.status
+
+    def unrate_post(self, post):
+        print('unrate_post')
+        if self.is_rated_post(post):
+            Like.query.filter_by(
+                user_id=self.id,
+                post_id=post.id).delete()
+
+    # що поставив користувач? користувач лайки/дизлайки
+    def get_rate_status(self, post):
+        print('get_rate_status')
+        if not self.is_rated_post(post):
+            return None
+        else:
+            rate = Like.query.filter(
+                Like.user_id == self.id,
+                Like.post_id == post.id).first().status
+            return rate
+
+    def is_rated_post(self, post):
+        print('is_rated_post')
+        return Like.query.filter(
+            Like.user_id == self.id,
+            Like.post_id == post.id).count() > 0
 
     def __repr__(self):
         return f"User('{self.username}', '{self.email}')"

@@ -17,7 +17,7 @@ def check_text_length(form, field):
     length = len(clean_text)
     if length < 15:
         raise ValidationError('Текст повинен бути довжиною від 15 символів ('
-                              'у вас - {})'.format(length))
+                              'ви ввели - {})'.format(length))
 
 
 class FormPostCreate(FlaskForm):
