@@ -52,7 +52,7 @@
           <small class="link-dark">#{{ post.category_br.name }}</small>
         </a><small class="text-muted">|</small>
         <small class="text-muted">
-          {{ post.created_at }}
+          {{ post.created_at.strftime('%Y-%m-%d %H:%m')  }}
         </small>
       </div>
       <h2><a class="article-title" href="{{url_for('blog_bp_in.post_view', post_id=post.id)}}"> {{ post.title }} </a></h2>

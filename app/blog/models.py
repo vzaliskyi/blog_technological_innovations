@@ -23,7 +23,7 @@ class Post(db.Model):  # type: ignore
     user_id = db.Column(db.Integer(), db.ForeignKey('user.id'))  # type: ignore
     title = db.Column(db.String(100), nullable=False)  # type: ignore
     content = db.Column(db.Text)  # type: ignore
-    created_at = db.Column(db.Date, default=datetime.utcnow())  # type: ignore
+    created_at = db.Column(db.DateTime, default=datetime.now())  # type: ignore
 
     comments = db.relationship('Comment', backref='post_br', lazy=True)
     # type: ignore
@@ -58,7 +58,7 @@ class Comment(db.Model):  # type: ignore
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))  # type: ignore
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'))  # type: ignore
     text = db.Column(db.String(500), nullable=False)  # type: ignore
-    created_at = db.Column(db.Date, default=datetime.utcnow)  # type: ignore
+    created_at = db.Column(db.DateTime, default=datetime.now())  # type: ignore
 
     def __repr__(self):
         return f'<Comment {self.id} {self.user_id} {self.post_id} ' \
