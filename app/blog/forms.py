@@ -88,3 +88,15 @@ class FormPostUpdate(FlaskForm):
         form.category.choices = [(elem.id, elem.name) for elem in
                                  Category.query.all()]
         return form
+
+
+class FormComment(FlaskForm):
+    comment = TextAreaField(
+        'Коментар',
+        render_kw={'cols':40, 'rows': 3},
+        validators=[Length(min=3, max=500,
+                           message='Коментар повинен бути довжиною '
+                                   'від 5 до 100 симолів!'),
+                    DataRequired(message='Коментар не може бути пустим!')]
+    )
+    submit = SubmitField('Опублікувати')

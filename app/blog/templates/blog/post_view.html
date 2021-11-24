@@ -18,7 +18,7 @@
           </div>
         </div>
       <div class="align-right mb-0">
-        <small class="text-muted fst-italic">{{post.created_at}}</small>
+        <small class="text-muted fst-italic">{{post.created_at.strftime('%Y-%m-%d')}}</small>
       </div>
     </div>
     <div class="card-body text-dark ">
@@ -30,6 +30,55 @@
       <a href="#" class="link-dark">#{{ post.category_br.name }}</a>
     </div>
   </div>
+
+<!--COMMENTS-->
+ <div id="comments_block" class="content-section form-control pb-2" >
+    {% if current_user.is_authenticated %}
+        <div align="center">
+            <h5>Коментувати:</h5>
+            <form method="post" action="{{ url_for('blog_bp_in.post_view', post_id=post.id, next=request.args.get('next')) }}" enctype="multipart/form-data" class="pt-1 pb-2">
+              {{form.csrf_token}}
+                {{ form.comment(style="max-width:100%") }}<br>
+                <button type="submit" class="btn btn-secondary bi bi-send-fill"> Надіслати</button>
+            </form>
+        </div>
+    {% endif %}
+
+    <div id="comments_list" class="card overflow-auto">
+          <ul class="list-group list-group-flush">
+              {%for comment in comments%}
+              <li class="list-group-item" style="">
+                  <div style="width:100%;">
+                      <div style="width:7%;float:left;">
+                           <img src="{{url_for('static',filename='profile_pictures/' + comment.user_br.picture)}}" class="rounded-circle post-author-img" alt="author-image">
+                      </div>
+                      <div style="width:93%;float:right;">
+                          <b>{{comment.user_br.username}}:</b>
+                            {% if comment.user_id==current_user.id %}
+                                <button type="button"  style="float: right;" onclick="window.location.href='{{url_for('blog_bp_in.comment_delete', comment_id=comment.id)}}';" class="btn btn-danger btn-sm" title="Видалити"><i class="bi bi-trash-fill"></i></button>
+                            {% endif %}<br>
+                          <small class="text-muted fst-italic">{{comment.created_at.strftime('%Y-%m-%d %H:%m')}}</small>
+                          <br>{{comment.text}}
+                      </div>
+                  </div>
+              </li>
+                {% endfor %}
+          </ul>
+    </div>
+
+<!--    <div class="card light-silver-bg">-->
+<!--        {%for comment in comments%}-->
+<!--               <img src="{{url_for('static',filename='profile_pictures/' + comment.user_br.picture)}}" class="rounded-circle post-author-img" alt="author-image">-->
+<!--               {{comment.user_br.username}}:-->
+<!--         <b>{{comment.text}}</b>-->
+<!--            {% if comment.user_id==current_user.id %}-->
+<!--                <a href="{{url_for('blog_bp_in.comment_delete', comment_id=comment.id)}}" class="btn btn-secondary ml-4 btn-sm"  title="Редагувати">Видалити</a>&nbsp;-->
+<!--            {% endif %}<br>-->
+<!--        {% endfor %}-->
+<!--    </div>-->
+    </div>
+  </div>
+<!--COMMENTS-->
 
 
   <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
@@ -56,8 +105,8 @@
     // якщо поточний користувач не авторизований або ж даний пост у нього не оцінений
     {% if not current_user.is_authenticated or current_user.is_rated_post(post) == false %}
       // то виводимо 'неактивні' кнопки
-      $("#like-btn").addClass('bi-hand-thumbs-up').prop('title', 'Мені подобається');
-      $("#dislike-btn").addClass('bi-hand-thumbs-down').prop('title', 'Мені не подобається');
+      $("#like-btn").addClass('bi-hand-thumbs-up').prop('title', 'Мені подобається').click(function(evt){evt.preventDefault();});
+      $("#dislike-btn").addClass('bi-hand-thumbs-down').prop('title', 'Мені не подобається').click(function(evt){evt.preventDefault();});
       // якщо користувач - автор даного поста - отже він не може оцінювати його - робимо кнопки неклікабельними
       {% if current_user.id == post.user_id %}
         console.log('ELIF');

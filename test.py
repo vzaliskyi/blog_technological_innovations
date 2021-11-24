@@ -25,24 +25,25 @@ class BaseTestCase(TestCase):
         response = self.client.get('/', content_type='html/text')
         self.assert200(response)
         self.assertTrue(
-            '<i class="bi bi-box-arrow-in-right"></i> <b>Увійти</b>'
+            'Увійти'
             in response.get_data(as_text=True)
         )
         self.assertFalse(
-            '<i class="bi bi-person-circle"></i> Мій профіль</a>'
+            'Мій профіль'
             in response.get_data(as_text=True)
         )
+        # print(response.get_data(as_text=True))
         self.assert401(self.client.get('auth/account'))
-        self.assert401(self.client.get('post_create'))
+        self.assert401(self.client.get('/post/create'))
 
     # перевірка успішної реєстрації користувача
     def test3_user_successful_registration(self):
         with self.client:
             response = self.client.get('/auth/register')
             self.assert200(response)
-            self.assertTrue('<legend class="border-bottom '
-                            'mb-4">Реєстрація</legend>' in
-                            response.get_data(as_text=True))
+            self.assertTrue('<legend class="border-bottom mb-4">'
+                            'Реєстрація</legend>'
+                            in response.get_data(as_text=True))
             response = self.client.post('/auth/register',
                                         data={'username': 'unit_tester1',
                                               'email': 'team3member@gmail.com',

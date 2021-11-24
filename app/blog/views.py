@@ -1,7 +1,7 @@
 from . import blog_bp
-from .forms import FormPostCreate, FormPostUpdate
+from .forms import FormPostCreate, FormPostUpdate, FormComment
 from app import db
-from .models import Category, Post, Like
+from .models import Category, Post, Like, Comment
 from app.user.models import User
 from flask import redirect, url_for, flash, request, render_template, abort
 from flask_login import current_user, login_required
@@ -33,11 +33,10 @@ def post_create():
 
 
 @blog_bp.route('/post/<int:post_id>/update', methods=["GET", "POST"])
-@login_required
 def post_update(post_id):
     form = FormPostUpdate.new()
     post = Post.query.get_or_404(post_id)
-    if current_user.id != post.user_id:
+    if not current_user.is_authenticated or current_user.id != post.user_id:
         abort(403, description="Ви не маєте прав на редагування даної "
                                "публікації")
 
@@ -66,10 +65,12 @@ def post_update(post_id):
 
 
 @blog_bp.route('/post/<int:post_id>/delete', methods=["GET", "POST"])
-@login_required
 def post_delete(post_id):
     post = Post.query.get_or_404(post_id)
-    if current_user.id == post.user_id:
+    if not current_user.is_authenticated or current_user.id != post.user_id:
+        abort(403, description="Ви не маєте прав на видалення даної "
+                               "публікації")
+    elif current_user.id == post.user_id:
         try:
             db.session.delete(post)
             db.session.commit()
@@ -77,15 +78,44 @@ def post_delete(post_id):
         except:
             flash('Помилка при видаленні публікації', 'danger')
         return redirect(url_for('user_bp_in.account'))
-    else:
-        abort(403, description="Ви не маєте прав на видалення даної "
-                               "публікації")
 
+@blog_bp.route('/comment/<int:comment_id>/delete', methods=["GET", "POST"])
+def comment_delete(comment_id):
+    comment = Comment.query.get_or_404(comment_id)
+    post_id = comment.post_id
+    if not current_user.is_authenticated or current_user.id != comment.user_id:
+        abort(403, description="Ви не маєте прав на видалення даного "
+                               "коментаря")
+    if current_user.id == comment.user_id:
+        try:
+            db.session.delete(comment)
+            db.session.commit()
+            # flash('Публікацію успішно видалено!', 'success')
+        except:
+            flash('Помилка при видаленні коментаря', 'danger')
+        return redirect(url_for('blog_bp_in.post_view', post_id=post_id))
+    # else:
+    #     abort(403, description="Ви не маєте прав на видалення даного "
+    #                            "коментаря")
 
-@blog_bp.route('/post/<int:post_id>')
+@blog_bp.route('/post/<int:post_id>', methods=["GET", "POST"])
 def post_view(post_id):
+    form = FormComment()
     post = Post.query.get_or_404(post_id)
-    return render_template('post_view.html', post=post)
+    comments = Comment.query.filter_by(post_id=post_id)
+    if form.validate_on_submit():
+        comment = Comment(user_id=current_user.id, post_id=post.id,
+                          text=form.comment.data)
+        try:
+            db.session.add(comment)
+            db.session.commit()
+            # flash('Публікація успішно оновлена', 'info')
+            return redirect(url_for('blog_bp_in.post_view', post_id=post_id))
+        except:
+            db.session.rollback()
+            flash('Помилка додавання коментаря', 'danger')
+    return render_template('post_view.html', post=post, form=form,
+                           comments=comments)
 
 
 @blog_bp.route('/post/<int:post_id>/<action>')
@@ -146,3 +176,4 @@ def posts_by_category(category_id):
     if posts.first() is None:
         abort(404, description="Категорію не знайдено")
     return render_template('posts_by_category.html', posts=posts)
+

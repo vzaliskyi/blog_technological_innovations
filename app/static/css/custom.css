@@ -143,3 +143,10 @@ float:right;
 .is-disabled {
   cursor: not-allowed;
 }
+#comments_block{
+  margin:auto;
+  width:70%;
+}
+#comments_list{
+  max-height:410px
+}
