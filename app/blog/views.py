@@ -79,6 +79,7 @@ def post_delete(post_id):
             flash('Помилка при видаленні публікації', 'danger')
         return redirect(url_for('user_bp_in.account'))
 
+
 @blog_bp.route('/comment/<int:comment_id>/delete', methods=["GET", "POST"])
 def comment_delete(comment_id):
     comment = Comment.query.get_or_404(comment_id)
@@ -97,6 +98,7 @@ def comment_delete(comment_id):
     # else:
     #     abort(403, description="Ви не маєте прав на видалення даного "
     #                            "коментаря")
+
 
 @blog_bp.route('/post/<int:post_id>', methods=["GET", "POST"])
 def post_view(post_id):
@@ -176,4 +178,3 @@ def posts_by_category(category_id):
     if posts.first() is None:
         abort(404, description="Категорію не знайдено")
     return render_template('posts_by_category.html', posts=posts)
-

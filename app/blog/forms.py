@@ -93,7 +93,7 @@ class FormPostUpdate(FlaskForm):
 class FormComment(FlaskForm):
     comment = TextAreaField(
         'Коментар',
-        render_kw={'cols':40, 'rows': 3},
+        render_kw={'cols': 40, 'rows': 3},
         validators=[Length(min=3, max=500,
                            message='Коментар повинен бути довжиною '
                                    'від 5 до 100 симолів!'),

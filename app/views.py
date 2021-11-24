@@ -13,10 +13,8 @@ def home():
     return render_template('home.html', title='TechBlog', posts=posts)
 
 
-# сюди передавати мабуть ще повідомлення про помилку
-# @app.errorhandler(401)
-# def unauthorized(e):
-#     if 'like' in request.path or 'dislike' in request.path:
-#         flash('Авторизуйтеся або зареєструйтеся, щоб мати можливість оцінювати'
-#               ' публікації', 'info')
-#     return redirect(url_for('user_bp_in.login'))
+# сюди передавати мабуть ще повідомлення про помилку @app.errorhandler(401)
+# def unauthorized(e): if 'like' in request.path or 'dislike' in
+# request.path: flash('Авторизуйтеся або зареєструйтеся, щоб мати можливість
+# оцінювати' ' публікації', 'info') return redirect(url_for(
+# 'user_bp_in.login'))
