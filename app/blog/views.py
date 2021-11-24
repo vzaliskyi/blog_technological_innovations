@@ -11,10 +11,14 @@ from flask_login import current_user, login_required
 @login_required
 def post_create():
     form = FormPostCreate.new()
+    # if request.method == 'POST':
+    #     print(request.values)
     if form.validate_on_submit():
         category_id = form.category.data
         title = form.title.data
         content = form.content.data
+
+        print(category_id, title, content)
         category = db.session.query(Category.id).filter(
             Category.id == category_id)
         post = Post(category_id=category, user_id=current_user.id, title=title,
@@ -28,6 +32,12 @@ def post_create():
             db.session.rollback()
             flash('Помилка при додаванні публікації до бази даних', 'danger')
             return redirect(url_for('blog_bp_in.post_create'))
+    # elif request.method == 'POST':
+    #     category_id = form.category.data
+    #     title = form.title.data
+    #     content = form.content.data
+    #     print('UNsuccessful create post')
+    #     print(category_id, title, content)
     return render_template('post_create.html', form=form,
                            title='Створення публікації')
 
@@ -95,9 +105,6 @@ def comment_delete(comment_id):
         except:
             flash('Помилка при видаленні коментаря', 'danger')
         return redirect(url_for('blog_bp_in.post_view', post_id=post_id))
-    # else:
-    #     abort(403, description="Ви не маєте прав на видалення даного "
-    #                            "коментаря")
 
 
 @blog_bp.route('/post/<int:post_id>', methods=["GET", "POST"])
@@ -112,7 +119,6 @@ def post_view(post_id):
         try:
             db.session.add(comment)
             db.session.commit()
-            # flash('Публікація успішно оновлена', 'info')
             return redirect(url_for('blog_bp_in.post_view', post_id=post_id))
         except:
             db.session.rollback()
