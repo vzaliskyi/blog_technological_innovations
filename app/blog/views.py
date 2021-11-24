@@ -104,7 +104,8 @@ def comment_delete(comment_id):
 def post_view(post_id):
     form = FormComment()
     post = Post.query.get_or_404(post_id)
-    comments = Comment.query.filter_by(post_id=post_id)
+    comments = Comment.query.filter_by(post_id=post_id)\
+        .order_by(Comment.created_at.desc())
     if form.validate_on_submit():
         comment = Comment(user_id=current_user.id, post_id=post.id,
                           text=form.comment.data)
