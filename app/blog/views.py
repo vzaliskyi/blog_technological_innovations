@@ -174,15 +174,18 @@ def rate_action(post_id, action):
 
 @blog_bp.route('/user_posts/<int:user_id>')
 def user_posts(user_id):
+    user = User.query.get_or_404(user_id)
     posts = Post.query.filter_by(user_id=user_id)
-    if posts.first() is None:
-        abort(404, description="Користувача не знайдено")
-    return render_template('user_posts.html', posts=posts)
+    # if posts.first() is None:
+    #     abort(404, description="Користувача не знайдено")
+    return render_template('user_posts.html', posts=posts, user=user)
 
 
 @blog_bp.route('/category/<int:category_id>')
 def posts_by_category(category_id):
+    category = Category.query.get_or_404(category_id)
     posts = Post.query.filter_by(category_id=category_id)
-    if posts.first() is None:
-        abort(404, description="Категорію не знайдено")
-    return render_template('posts_by_category.html', posts=posts)
+    # if posts.first() is None:
+    #     abort(404, description="Категорію не знайдено")
+    return render_template('posts_by_category.html', posts=posts,
+                           category=category)

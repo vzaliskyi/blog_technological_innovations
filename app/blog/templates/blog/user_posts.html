@@ -4,10 +4,23 @@
 
   <div class="card p-2" style="margin:auto;width:60%">
     <div align="center">
-      <img src="{{url_for('static',filename='profile_pictures/' + posts.first().user_br.picture)}}" class="rounded-circle author-img" alt="author-image">
-      <legend class="border-bottom mb-4"><small>Публікації </small><b>{{posts.first().user_br.username}}</b></legend>
+      <img src="{{url_for('static',filename='profile_pictures/' + user.picture)}}" class="rounded-circle author-img" alt="author-image">
+      <legend class="border-bottom mb-4">
+        <small>Публікації </small>
+        <b>{{user.username}}
+          {% if posts.first() %}
+            ({{posts.first().total_posts_by_user(user.id)}})
+          {% endif %}
+        </b>
+      </legend>
     </div>
+      {% if posts.first() %}
         {% include "posts_list.html" %}
+      {% else %}
+        <div class="alert alert-info" role="alert" align="center">
+          Даний користувач не має жодної публікації
+        </div>
+      {% endif %}
   </div>
 
 {% endblock main %}
