@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block main %}
 
+<!-- post block -->
   <div class="card mb-3 post-section" style="overflow:auto;margin:auto;width:70%">
     <div class="card-header light-silver-bg">
       {% if current_user.id == post.user_id %}
@@ -26,44 +27,44 @@
     </div>
     <div class="card-footer light-silver-bg">
       <img src="{{url_for('static',filename='profile_pictures/' + post.user_br.picture)}}" class="rounded-circle post-author-img" alt="author-image">
-      <a class="post-author-name" href="{{url_for('blog_bp_in.user_posts', user_id=post.user_br.id)}}"> {{post.user_br.username}}</a>&nbsp;&nbsp;
+      <a class="post-author-name" href="{{url_for('blog_bp_in.user_posts', user_id=post.user_br.id)}}"> <b>{{post.user_br.username}}</b></a>&nbsp;&nbsp;
       <a href="#" class="link-dark">#{{ post.category_br.name }}</a>
     </div>
   </div>
 
-<!--COMMENTS-->
+<!-- post comments -->
  <div id="comments_block" class="content-section form-control pb-2" >
     {% if current_user.is_authenticated %}
-        <div align="center">
-            <h5>Коментувати:</h5>
-            <form method="post" action="{{ url_for('blog_bp_in.post_view', post_id=post.id, next=request.args.get('next')) }}" enctype="multipart/form-data" class="pt-1 pb-2">
-              {{form.csrf_token}}
-                {{ form.comment(style="max-width:100%") }}<br>
-                <button type="submit" class="btn btn-secondary bi bi-send-fill"> Надіслати</button>
-            </form>
-        </div>
+      <div align="center">
+        <h5>Коментувати:</h5>
+        <form method="post" action="{{ url_for('blog_bp_in.post_view', post_id=post.id, next=request.args.get('next')) }}" enctype="multipart/form-data" class="pt-1 pb-2">
+          {{form.csrf_token}}
+          {{ form.comment(style="max-width:100%") }} <br>
+          <button type="submit" class="btn btn-secondary"> Надіслати</button>
+        </form>
+      </div>
     {% endif %}
 
     <div id="comments_list" class="card overflow-auto">
-          <ul class="list-group list-group-flush">
-              {%for comment in comments%}
-              <li class="list-group-item" style="">
-                  <div style="width:100%;">
-                      <div style="width:7%;float:left;">
-                           <img src="{{url_for('static',filename='profile_pictures/' + comment.user_br.picture)}}" class="rounded-circle post-author-img" alt="author-image">
-                      </div>
-                      <div style="width:93%;float:right;">
-                          <b>{{comment.user_br.username}}:</b>
-                            {% if comment.user_id==current_user.id %}
-                                <button type="button"  style="float: right;" onclick="window.location.href='{{url_for('blog_bp_in.comment_delete', comment_id=comment.id)}}';" class="btn btn-danger btn-sm" title="Видалити"><i class="bi bi-trash-fill"></i></button>
-                            {% endif %}<br>
-                          <small class="text-muted fst-italic">{{comment.created_at.strftime('%Y-%m-%d %H:%M')}}</small>
-                          <br>{{comment.text}}
-                      </div>
-                  </div>
-              </li>
-                {% endfor %}
-          </ul>
+      <ul class="list-group list-group-flush">
+        {%for comment in comments%}
+          <li class="list-group-item" style="">
+            <div style="width:100%;">
+              <div style="width:7%;float:left;">
+                <img src="{{url_for('static',filename='profile_pictures/' + comment.user_br.picture)}}" class="rounded-circle post-author-img" alt="author-image">
+              </div>
+              <div style="width:93%;float:right;">
+                <b>{{comment.user_br.username}}:</b>
+                  {% if comment.user_id==current_user.id %}
+                    <button type="button" style="float: right;" onclick="window.location.href='{{url_for('blog_bp_in.comment_delete', comment_id=comment.id)}}';" class="btn btn-danger btn-sm" title="Видалити"><i class="bi bi-trash-fill"></i></button>
+                  {% endif %}<br>
+                <small class="text-muted fst-italic">{{comment.created_at.strftime('%Y-%m-%d %H:%M')}}</small>
+                <br>{{comment.text}}
+              </div>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
     </div>
 
 <!--    <div class="card light-silver-bg">-->
@@ -77,10 +78,8 @@
 <!--        {% endfor %}-->
 <!--    </div>-->
     </div>
-  </div>
-<!--COMMENTS-->
 
-
+<!-- confirmation of deleting the post -->
   <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -102,29 +101,41 @@
 
 <script>
   $(document).ready(function(){
-    // якщо поточний користувач не авторизований або ж даний пост у нього не оцінений
-    {% if not current_user.is_authenticated or current_user.is_rated_post(post) == false %}
-      // то виводимо 'неактивні' кнопки
-      $("#like-btn").addClass('bi-hand-thumbs-up').prop('title', 'Мені подобається').click(function(evt){evt.preventDefault();});
-      $("#dislike-btn").addClass('bi-hand-thumbs-down').prop('title', 'Мені не подобається').click(function(evt){evt.preventDefault();});
-      // якщо користувач - автор даного поста - отже він не може оцінювати його - робимо кнопки неклікабельними
-      {% if current_user.id == post.user_id %}
-        console.log('ELIF');
+    console.log('0');
+    // якщо користувач не авторизований
+    {% if not current_user.is_authenticated %}
+        console.log('1');
+        // то виводимо 'неактивні' кнопки, + блокуємо натискання і при наведенні виводимо що користувач не може оцінювати публікації
         $("#like-btn").addClass('bi-hand-thumbs-up').click(function(evt){evt.preventDefault();});
         $("#dislike-btn").addClass('bi-hand-thumbs-down').click(function(evt){evt.preventDefault();});
-      {% endif %}
 
+    // якщо поточним користувачем пост не оцінений
+    {% elif current_user.is_rated_post(post) == false %}
+    console.log('2');
+        // якщо користувач - не автор даної публікації - даємо йому право користуватись кнопками
+        {% if current_user.id != post.user_id %}
+            console.log('2 if');
+            $("#like-btn").addClass('bi-hand-thumbs-up').prop('title', 'Мені подобається')
+            $("#dislike-btn").addClass('bi-hand-thumbs-down').prop('title', 'Мені не подобається')
+        // якщо це автор публікації - то робимо кнопку неклікабельною
+        {% else %}
+            console.log('2 else');
+            $("#like-btn").addClass('bi-hand-thumbs-up').click(function(evt){evt.preventDefault();});
+            $("#dislike-btn").addClass('bi-hand-thumbs-down').click(function(evt){evt.preventDefault();});
+        {% endif %}
     // якщо користувач авторизований, і даний пост у нього вже є оцінений, то
     {% else %}
-      // робимо відповідну кнопку активною, а іншу позначаємо як неактивну
-      {% if current_user.get_rate_status(post) == true %}
-        $("#like-btn").addClass('bi-hand-thumbs-up-fill').prop('title', 'Більше не подобається');
-        $("#dislike-btn").addClass('bi-hand-thumbs-down').prop('title', 'Мені не подобається');
-      {% else %}
-        $("#like-btn").addClass('bi-hand-thumbs-up').prop('title', 'Мені подобається');
-        $("#dislike-btn").addClass('bi-hand-thumbs-down-fill').prop('title', 'Мені не подобається');
-      {% endif %}
-
+        console.log('3');
+        // робимо відповідну кнопку активною, а іншу позначаємо як неактивну
+        {% if current_user.get_rate_status(post) == true %}
+            console.log('3 if');
+            $("#like-btn").addClass('bi-hand-thumbs-up-fill').prop('title', 'Більше не подобається');
+            $("#dislike-btn").addClass('bi-hand-thumbs-down').prop('title', 'Мені не подобається');
+        {% else %}
+            console.log('3 else');
+            $("#like-btn").addClass('bi-hand-thumbs-up').prop('title', 'Мені подобається');
+            $("#dislike-btn").addClass('bi-hand-thumbs-down-fill').prop('title', 'Мені не подобається');
+        {% endif %}
     {% endif %}
 
     $("#likes-percentage").attr("style", "width:{{post.get_like_percentage()}}%; background-color:#212529;");
