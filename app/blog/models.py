@@ -31,6 +31,9 @@ class Post(db.Model):  # type: ignore
 
     # type: ignore
 
+    def total_comments(self):
+        return Comment.query.filter(Comment.post_id == self.id).count()
+
     def total_likes(self):
         return Like.query.filter(
             Like.post_id == self.id,
