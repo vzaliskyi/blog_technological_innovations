@@ -4,7 +4,7 @@ from app import db, app
 
 # from flask import url_for
 from app.user.models import User
-from app.blog.models import *
+from app.blog.models import Category, Post, Comment
 
 
 class BaseTestCase(TestCase):
@@ -301,12 +301,13 @@ class BaseTestCase(TestCase):
                                    content_type='html/text')
         # print(response.get_data(as_text=True))
         self.assert200(response)
+
         response = self.client.get('/post/1/like',
                                    content_type='html/text')
         self.assert401(response)
         self.assertTrue(
             'The server could not verify that you are authorized to access '
-            'the URL requested '
+            'the URL requested'
             in response.get_data(as_text=True)
         )
 
