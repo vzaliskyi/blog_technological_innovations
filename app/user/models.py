@@ -1,4 +1,4 @@
-from app.blog.models import Comment, Like, Post
+from app.blog.models import Comment, Like, Post, Category
 from app import db, bcrypt, login_manager, app
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask_login import UserMixin

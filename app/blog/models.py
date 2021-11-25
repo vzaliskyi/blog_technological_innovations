@@ -1,6 +1,7 @@
 from app import db
 # from app.user.models import User
 from datetime import datetime
+# from flask_sqlalchemy import hybrid_property
 
 
 class Category(db.Model):  # type: ignore
@@ -31,6 +32,15 @@ class Post(db.Model):  # type: ignore
 
     # type: ignore
 
+    def total_posts_by_category(self, category_id):
+        return Post.query.filter(Post.category_id == category_id).count()
+
+    def total_posts_by_user(self, user_id):
+        return Post.query.filter(Post.user_id == user_id).count()
+
+    def total_comments(self):
+        return Comment.query.filter(Comment.post_id == self.id).count()
+
     def total_likes(self):
         return Like.query.filter(
             Like.post_id == self.id,
@@ -41,6 +51,7 @@ class Post(db.Model):  # type: ignore
             Like.post_id == self.id,
             Like.status == False).count()
 
+    # @hybrid_property
     def get_like_percentage(self):
         num_of_rates = self.total_likes() + self.total_dislikes()
         print('get_like_percentage')

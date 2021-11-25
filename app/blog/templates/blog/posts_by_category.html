@@ -4,9 +4,21 @@
 
   <div class="card p-2" style="margin:auto;width:60%">
     <div align="center">
-      <legend class="border-bottom mb-4">Категорія <b class="text-lowercase">{{posts.first().category_br.name}}</b></legend>
+      <legend class="border-bottom mb-4">Категорія
+        <b class="text-uppercase">{{category.name}}
+          {% if posts.first() %}
+            ({{posts.first().total_posts_by_category(category.id)}})
+          {% endif %}
+        </b>
+      </legend>
     </div>
+      {% if posts.first() %}
         {% include "posts_list.html" %}
+      {% else %}
+        <div class="alert alert-info" role="alert" align="center">
+          Публікацій за цією категорією не знайдено
+        </div>
+      {% endif %}
   </div>
 
 {% endblock main %}

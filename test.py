@@ -1,8 +1,9 @@
 import unittest
 from flask_testing import TestCase
 from app import db, app
+
 # from flask import url_for
-# from app.user.models import User
+from app.user.models import User, Post, Category
 
 
 class BaseTestCase(TestCase):
@@ -33,7 +34,7 @@ class BaseTestCase(TestCase):
             in response.get_data(as_text=True)
         )
         # print(response.get_data(as_text=True))
-        self.assert401(self.client.get('auth/account'))
+        self.assert401(self.client.get('/auth/account'))
         self.assert401(self.client.get('/post/create'))
 
     # перевірка успішної реєстрації користувача
@@ -164,6 +165,37 @@ class BaseTestCase(TestCase):
             self.assertMessageFlashed('Введено невірний пароль.',
                                       category='danger')
             self.assert401(self.client.get('auth/account'))
+
+    def test6_create_post(self):
+        with self.client:
+            db.session.add(Category(name='Смартфони'))
+            db.session.commit()
+
+            response = self.client.post('/auth/login',
+                                        data={'email': 'team3member@gmail.com',
+                                              'password': '12345qaZ!'},
+                                        follow_redirects=True)
+            self.assert200(response)
+
+            response = self.client.get('/post/create')
+            self.assert200(response)
+
+            response = self.client.post('/post/create',
+                                        data={'category': 1,
+                                              'title': 'Post_tester22',
+                                              'content': 'папаапsdfh '
+                                                         'gchkfyukhklv'
+                                                         'mccgfsdfbxcvbfhghf '
+                                              }, follow_redirects=True)
+            self.assert200(response)
+
+            # print(response.get_data(as_text=True))
+
+            self.assertMessageFlashed('Публікація успішно створена',
+                                      category='success')
+            self.assertTrue('<h3 class="text-center mb-0">Post_tester22</h3>'
+                            in response.get_data(as_text=True)
+                            )
 
 
 if __name__ == '__main__':

@@ -14,7 +14,12 @@ def home():
 
 
 # сюди передавати мабуть ще повідомлення про помилку @app.errorhandler(401)
-# def unauthorized(e): if 'like' in request.path or 'dislike' in
-# request.path: flash('Авторизуйтеся або зареєструйтеся, щоб мати можливість
-# оцінювати' ' публікації', 'info') return redirect(url_for(
-# 'user_bp_in.login'))
+# @app.errorhandler(401)
+# def unauthorized(e):
+#     if 'like' in request.path or 'dislike' in request.path:
+#         flash('Авторизуйтеся або зареєструйтеся, щоб мати можливість '
+#               'оцінювати публікації', 'info')
+#     else:
+#         flash('Для доступу до цієї сторінки необхідно спершу авторизуватись',
+#               'info')
+#     return redirect(url_for('user_bp_in.login'), code=401)
