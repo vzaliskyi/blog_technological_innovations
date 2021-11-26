@@ -11,33 +11,45 @@ class BaseTestCase(TestCase):
     app.config.update(SQLALCHEMY_DATABASE_URI='sqlite:///testing.db',
                       SECRET_KEY='asfdsfsaaffdf', WTF_CSRF_ENABLED=False)
     db.drop_all()
-    db.create_all()
-    db.session.add_all([Category(name='Смартфони'),
-                        Post(category_id=1, user_id=1, title='Test title',
-                             content='Test content for test title'),
-                        User(username='unit_tester_main',
-                             email='unit_tester_main@gmail.com',
-                             password='qwerTy#45'),
-                        User(username='unit_tester_comment',
-                             email='unit_tester_comment@gmail.com',
-                             password='qwerTy#45'),
-                        Post(category_id=1, user_id=2, title='Post for test '
-                                                             'likes',
-                             content='Test content(post for test likes)'),
-                        ])
-    db.session.commit()
 
     def create_app(self):
         return app
 
-    def test1_home_page(self):
+    def setUp(self):
+        db.create_all()
+        db.session.add_all([Category(name='Смартфони'),
+                            Category(name='Ноутбуки'),
+                            Post(category_id=1, user_id=1, title='Test title',
+                                 content='Test content for test title'),
+                            User(username='tester01',
+                                 email='tester01@gmail.com',
+                                 password='qwerTy#45'),
+                            User(username='unit_tester_comment',
+                                 email='unit_tester_comment@gmail.com',
+                                 password='qwerTy#45'),
+                            Post(category_id=1, user_id=2,
+                                 title='Post for test '
+                                       'likes',
+                                 content='Test content(post for test likes)'),
+                            ])
+        db.session.commit()
+
+    def tearDown(self):
+        db.session.remove()
+        db.drop_all()
+
+
+class TestHomePage(BaseTestCase):
+    def test_home_page(self):
         response = self.client.get('/', content_type='html/text')
         self.assertEqual(response.status_code, 200)
         self.assertIn(b'TechBlog', response.data)
         self.assertTrue('Категорії' in response.get_data(as_text=True))
 
+
+class TestLoginRegistration(BaseTestCase):
     # перевірка неавторизованого користувача
-    def test2_access_for_unauth_user(self):
+    def test_access_for_unauth_user(self):
         response = self.client.get('/', content_type='html/text')
         self.assert200(response)
         self.assertTrue(
@@ -53,7 +65,7 @@ class BaseTestCase(TestCase):
         self.assert401(self.client.get('/post/create'))
 
     # перевірка успішної реєстрації користувача
-    def test3_user_successful_registration(self):
+    def test_user_successful_registration(self):
         with self.client:
             response = self.client.get('/auth/register')
             self.assert200(response)
@@ -72,7 +84,7 @@ class BaseTestCase(TestCase):
             self.assert401(self.client.get('auth/account'))
 
     # перевірка сценарію неуспішної реєстрації користувача
-    def test4_user_unsuccessful_registration(self):
+    def test_user_unsuccessful_registration(self):
         with self.client:
             response = self.client.get('/auth/register')
             self.assert200(response)
@@ -81,7 +93,7 @@ class BaseTestCase(TestCase):
                             response.get_data(as_text=True))
             # передаємо невірні значення полів
             response = self.client.post('/auth/register',
-                                        data={'username': 'unit_tester1',
+                                        data={'username': 'tester01',
                                               'email': 'team3membergmail.com',
                                               'password': 'qwert',
                                               'confirm_password': 'qwer'},
@@ -107,7 +119,7 @@ class BaseTestCase(TestCase):
             self.assert401(self.client.get('auth/account'))
 
     # перевірка успшної авторизації користувача
-    def test5_user_successful_login(self):
+    def test_user_successful_login(self):
         with self.client:
             response = self.client.get('/auth/login')
             # response = self.client.get(url_for('user_bp_in.login'))
@@ -116,7 +128,7 @@ class BaseTestCase(TestCase):
                 '<legend class="border-bottom mb-4">Вхід</legend>' in
                 response.get_data(as_text=True))
             response = self.client.post('/auth/login',
-                                        data={'email': 'unit_tester_main'
+                                        data={'email': 'tester01'
                                                        '@gmail.com',
                                               'password': 'qwerTy#45'},
                                         follow_redirects=True)
@@ -131,14 +143,14 @@ class BaseTestCase(TestCase):
             )
             self.assertTrue(
                 '<em class="card-title text-muted">'
-                'unit_tester_main@gmail.com</em>'
+                'tester01@gmail.com</em>'
                 in response.get_data(as_text=True)
             )
             # користувач тепер має доступ до сторінки аккаунту
             self.assert200(self.client.get('auth/account'))
 
     # перевірка сценарію неуспішної авторизації
-    def test6_user_unsuccessful_login(self):
+    def test_user_unsuccessful_login(self):
         with self.client:
             response = self.client.get('/auth/login')
             # response = self.client.get(url_for('user_bp_in.login'))
@@ -175,7 +187,7 @@ class BaseTestCase(TestCase):
 
             # якщо користувач вводить невірний пароль
             response = self.client.post('/auth/login',
-                                        data={'email': 'unit_tester_main'
+                                        data={'email': 'tester01'
                                                        '@gmail.com',
                                               'password': 'qwerty345'},
                                         follow_redirects=True)
@@ -184,14 +196,16 @@ class BaseTestCase(TestCase):
                                       category='danger')
             self.assert401(self.client.get('auth/account'))
 
-    def test6_create_post(self):
+
+class TestsCRUD(BaseTestCase):
+    def test_create_post(self):
         with self.client:
             # db.session.add(Category(name='Смартфони'))
             # db.session.commit()
 
             response = self.client.post('/auth/login',
-                                        data={'email': 'team3member@gmail.com',
-                                              'password': '12345qaZ!'},
+                                        data={'email': 'tester01@gmail.com',
+                                              'password': 'qwerTy#45'},
                                         follow_redirects=True)
             self.assert200(response)
 
@@ -215,8 +229,10 @@ class BaseTestCase(TestCase):
                             in response.get_data(as_text=True)
                             )
 
+
+class TestsComments(BaseTestCase):
     # перевірка для нeавторизованого користувача
-    def test7_access_to_comment_for_unauth_user(self):
+    def test_access_to_comment_for_unauth_user(self):
         comment1 = Comment(user_id=1, post_id=1, text='Test comment')
         db.session.add(comment1)
         db.session.commit()
@@ -253,10 +269,10 @@ class BaseTestCase(TestCase):
         )
 
     # перевірка для авторизованого користувача
-    def test8_access_to_comment_for_auth_user(self):
+    def test_access_to_comment_for_auth_user(self):
         response = self.client.post('/auth/login',
                                     data={
-                                        'email': 'unit_tester_main@gmail.com',
+                                        'email': 'tester01@gmail.com',
                                         'password': 'qwerTy#45'},
                                     follow_redirects=True)
         self.assert200(response)
@@ -287,7 +303,7 @@ class BaseTestCase(TestCase):
             'title="Видалити"'
             in response.get_data(as_text=True)
         )
-        response = self.client.post('/comment/2/delete',
+        response = self.client.post('/comment/1/delete',
                                     follow_redirects=True)
         self.assert200(response)
         self.assertFalse(
@@ -295,8 +311,10 @@ class BaseTestCase(TestCase):
             in response.get_data(as_text=True)
         )
 
+
+class TestsLikes(BaseTestCase):
     # перевірка для нeавторизованого користувача
-    def test9_access_to_like_for_unauth_user(self):
+    def test_access_to_like_for_unauth_user(self):
         response = self.client.get('/post/1',
                                    content_type='html/text')
         # print(response.get_data(as_text=True))
@@ -312,9 +330,9 @@ class BaseTestCase(TestCase):
         )
 
     # перевірка для нeавторизованого користувача
-    def test10_access_to_like_for_auth_user(self):
+    def test_access_to_like_for_auth_user(self):
         response = self.client.post('/auth/login',
-                                    data={'email': 'unit_tester_main@gmail.'
+                                    data={'email': 'tester01@gmail.'
                                                    'com',
                                           'password': 'qwerTy#45'},
                                     follow_redirects=True)
