@@ -2,6 +2,7 @@ from app import db
 # from app.user.models import User
 from datetime import datetime
 # from flask_sqlalchemy import hybrid_property
+from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
 
 
 class Category(db.Model):  # type: ignore
@@ -51,7 +52,6 @@ class Post(db.Model):  # type: ignore
             Like.post_id == self.id,
             Like.status == False).count()
 
-    # @hybrid_property
     def get_like_percentage(self):
         num_of_rates = self.total_likes() + self.total_dislikes()
         print('get_like_percentage')
@@ -59,6 +59,18 @@ class Post(db.Model):  # type: ignore
             return 50
         else:
             return int(self.total_likes() / num_of_rates * 100)
+
+    # @hybrid_property
+    # def rate_difference(self):
+    #     total_l = Like.query.filter(
+    #         Like.post_id == self.id,
+    #         Like.status == True).count()
+    #     total_d = Like.query.filter(
+    #         Like.post_id == self.id,
+    #         Like.status == False).count()
+    #
+    #     num_of_rates = total_l + total_d
+    #     return num_of_rates
 
     def __repr__(self):
         return f'<Post {self.id} {self.title} >'
