@@ -28,7 +28,7 @@ class BaseTestCase(TestCase):
                  email='unit_tester_comment@gmail.com',
                  password='qwerTy#45'),
             Post(category_id=1, user_id=1, title='Назва блогу 1',
-                content='text text text text'),
+                 content='text text text text'),
             Post(category_id=2, user_id=2, title='Назва блогу 2',
                  content='text text text text'),
             Post(category_id=1, user_id=1, title='Назва блогу 3',
