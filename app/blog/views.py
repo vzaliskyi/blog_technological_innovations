@@ -18,7 +18,7 @@ def post_create():
         title = form.title.data
         content = form.content.data
 
-        print(category_id, title, content)
+        # print(category_id, title, content)
         category = db.session.query(Category.id).filter(
             Category.id == category_id)
         post = Post(category_id=category, user_id=current_user.id, title=title,
