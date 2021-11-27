@@ -424,10 +424,11 @@ class TestsCRUD(BaseTestCase):
     # тест видалення постів для авторизованого користувача
     def test10_auth_delete(self):
         with self.client:
-            response = self.client.post('/auth/login',
-                                 data={'email': 'tester01@gmail.com',
-                                       'password': 'qwerTy#45'},
-                                       follow_redirects=True)
+            response = self.client.post(
+                '/auth/login',
+                 data={'email': 'tester01@gmail.com',
+                       'password': 'qwerTy#45'},
+                       follow_redirects=True)
 
             current_d_user = current_user.id
 
@@ -435,8 +436,8 @@ class TestsCRUD(BaseTestCase):
                 post = db.session.query(Post).filter(Post.id == i)
                 id_post_user = post[0].user_id
 
-                response = self.client.get(f'/post/{i}/delete',
-                     follow_redirects=True)
+                response = self.client.get(
+                    f'/post/{i}/delete', follow_redirects=True)
 
                 if current_d_user == id_post_user:
                     self.assert200(response)
@@ -445,9 +446,6 @@ class TestsCRUD(BaseTestCase):
                     self.assert404(response)
                 else:
                     self.assert403(response)
-
-
-
 
 class TestsComments(BaseTestCase):
     # перевірка для нeавторизованого користувача
