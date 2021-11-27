@@ -21,23 +21,37 @@ class BaseTestCase(TestCase):
         db.session.add_all([
              Category(name='Смартфони'),
              Category(name='Ноутбуки'),
-             User(username='tester01',
+             User(
+                username='tester01',
                 email='tester01@gmail.com',
-                password='qwerTy#45'),
-             User(username='unit_tester_comment',
+                password='qwerTy#45'
+                ),
+             User(
+                username='unit_tester_comment',
                 email='unit_tester_comment@gmail.com',
-                password='qwerTy#45'),
-             Post(category_id=1, user_id=1, title='Назва блогу 1',
-                content='text text text text'),
-             Post(category_id=2, user_id=2, title='Назва блогу 2',
-                content='text text text text'),
-             Post(category_id=1, user_id=1, title='Назва блогу 3',
-                content='text text text text'),
-             Post(category_id=2, user_id=2, title='Назва блогу 4',
-                content='text text text text'),
-             Post(category_id=1, user_id=1, title='Назва блогу 5',
-                content='text text text text')
-            ])
+                password='qwerTy#45'
+                ),
+             Post(
+                category_id=1, user_id=1, title='Назва блогу 1',
+                content='text text text text'
+                ),
+             Post(
+                category_id=2, user_id=2, title='Назва блогу 2',
+                content='text text text text'
+                ),
+             Post(
+                category_id=1, user_id=1, title='Назва блогу 3',
+                content='text text text text'
+                ),
+             Post(
+                category_id=2, user_id=2, title='Назва блогу 4',
+                content='text text text text'
+                ),
+             Post(
+                category_id=1, user_id=1, title='Назва блогу 5',
+                content='text text text text'
+                )]
+             )
         db.session.commit()
 
     def tearDown(self):
@@ -193,10 +207,10 @@ class TestLoginRegistration(BaseTestCase):
 
             # якщо користувач вводить невірний пароль
             response = self.client.post('/auth/login',
-                                        data={'email': 'tester01'
+                                         data={'email': 'tester01'
                                                        '@gmail.com',
-                                              'password': 'qwerty345'},
-                                        follow_redirects=True)
+                                               'password': 'qwerty345'},
+                                         follow_redirects=True)
             self.assert200(response)
             self.assertMessageFlashed('Введено невірний пароль.',
                                       category='danger')
@@ -222,14 +236,18 @@ class TestsCRUD(BaseTestCase):
             response = self.client.get(f'post/{i}')
             self.assert200(response)
 
-            user_id = db.session.query(Post).filter(Post.id == i)[0].user_id
-            username = db.session.query(User).filter(User.id == user_id)[0].username
+            user_id = db.session.query(Post).filter(
+                Post.id == i)[0].user_id
+            username = db.session.query(User).filter(
+                User.id == user_id)[0].username
 
             self.assertTrue(
                 f'<h3 class="text-center mb-0">Назва блогу {i}</h3>'
                 in response.get_data(as_text=True))
 
-            self.assertTrue('text text text text' in response.get_data(as_text=True))
+            self.assertTrue('text text text text'
+                in response.get_data(as_text=True))
+
             self.assertTrue(username in response.get_data(as_text=True))
 
     # тест оновлення постів для неавторизованого користувача
@@ -257,9 +275,10 @@ class TestsCRUD(BaseTestCase):
         with self.client:
 
             response = self.client.post('/auth/login',
-                                        data={'email': 'tester01@gmail.com',
-                                              'password': 'qwerTy#45'},
-                                        follow_redirects=True)
+                             data={'email': 'tester01@gmail.com',
+                                   'password': 'qwerTy#45'},
+                                   follow_redirects=True)
+
             self.assert200(response)
 
             response = self.client.get('/post/create')
@@ -300,19 +319,19 @@ class TestsCRUD(BaseTestCase):
 
             self.assertTrue(
                 'Заголовок повинен бути довжиною від 5 до 100 симолів!'
-                            in response.get_data(as_text=True))
+                 in response.get_data(as_text=True))
 
             self.assertTrue(
-                'Текст повинен бути довжиною від 15 символів'
-                            in response.get_data(as_text=True))
+                 'Текст повинен бути довжиною від 15 символів'
+                 in response.get_data(as_text=True))
 
     # тест перегляду постів для авторизованого користувача
     def test7_auth_view_post(self):
         with self.client:
             response = self.client.post('/auth/login',
-                     data={'email': 'tester01@gmail.com',
-                          'password': 'qwerTy#45'},
-                           follow_redirects=True)
+                             data={'email': 'tester01@gmail.com',
+                                   'password': 'qwerTy#45'},
+                                   follow_redirects=True)
 
             for i in range(1, 6):
                 response = self.client.get(f'post/{i}')
@@ -324,20 +343,21 @@ class TestsCRUD(BaseTestCase):
                     User.id == user_id)[0].username
 
                 self.assertTrue(
-                f'<h3 class="text-center mb-0">Назва блогу {i}</h3>'
-                in response.get_data(as_text=True))
+                    f'<h3 class="text-center mb-0">Назва блогу {i}</h3>'
+                    in response.get_data(as_text=True))
 
                 self.assertTrue('text text text text'
                     in response.get_data(as_text=True))
+
                 self.assertTrue(username in response.get_data(as_text=True))
 
     # тест успішного оновлення поста для авторизованого користувача
     def test8_auth_update_post_succesfull(self):
         with self.client:
             response = self.client.post('/auth/login',
-                     data={'email': 'tester01@gmail.com',
-                           'password': 'qwerTy#45'},
-                           follow_redirects=True)
+                             data={'email': 'tester01@gmail.com',
+                                   'password': 'qwerTy#45'},
+                                   follow_redirects=True)
 
             id_user = current_user.id
 
@@ -367,9 +387,9 @@ class TestsCRUD(BaseTestCase):
     def test9_auth_update_post_unsuccesfull(self):
         with self.client:
             response = self.client.post('/auth/login',
-                         data={'email': 'tester01@gmail.com',
-                               'password': 'qwerTy#45'},
-                               follow_redirects=True)
+                                 data={'email': 'tester01@gmail.com',
+                                       'password': 'qwerTy#45'},
+                                       follow_redirects=True)
 
             id_user = current_user.id
 
@@ -386,29 +406,28 @@ class TestsCRUD(BaseTestCase):
                     continue
 
                 response = self.client.post(f'post/{i}/update',
-                                             data={
-                                             'category': 1,
-                                             'title': f'Upda',
-                                             'content': 'Text'},
-                                             follow_redirects=True)
+                                             data={'category': 1,
+                                                   'title': f'Upda',
+                                                   'content': 'Text'},
+                                                   follow_redirects=True)
 
                 self.assertNotEqual(response, 200)
 
                 self.assertTrue(
                     'Заголовок повинен бути довжиною від 5 до 100 симолів!'
-                             in response.get_data(as_text=True))
+                    in response.get_data(as_text=True))
 
                 self.assertTrue(
                     'Текст повинен бути довжиною від 15 символів'
-                             in response.get_data(as_text=True))
+                    in response.get_data(as_text=True))
 
     # тест видалення постів для авторизованого користувача
     def test10_auth_delete(self):
         with self.client:
             response = self.client.post('/auth/login',
-                         data={'email': 'tester01@gmail.com',
-                               'password': 'qwerTy#45'},
-                               follow_redirects=True)
+                                 data={'email': 'tester01@gmail.com',
+                                       'password': 'qwerTy#45'},
+                                       follow_redirects=True)
 
             current_d_user = current_user.id
 
