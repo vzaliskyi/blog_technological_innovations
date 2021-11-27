@@ -54,26 +54,26 @@ class User(db.Model, UserMixin):  # type: ignore
     # #/#/#/#/#/#/#/#/#/#/#/#/#/#/#/#/#/#/#/#/#/#/#/#/#/#/#/#/#/#/
     # методи для опрацювання ставлення лайків/дизлайків на пост
     def like_post(self, post):
-        print('like_post')
+        # print('like_post')
         if not self.is_rated_post(post):
             like = Like(user_id=self.id, post_id=post.id, status=True)
             db.session.add(like)
             print('like_post +')
 
     def dislike_post(self, post):
-        print('dislike_post')
+        # print('dislike_post')
         if not self.is_rated_post(post):
             like = Like(user_id=self.id, post_id=post.id, status=False)
             db.session.add(like)
             print('dislike_post +')
 
     def change_rate(self, post):
-        print('change_rate')
+        # print('change_rate')
         rate = Like.query.filter_by(user_id=self.id, post_id=post.id).first()
         rate.status = not rate.status
 
     def unrate_post(self, post):
-        print('unrate_post')
+        # print('unrate_post')
         if self.is_rated_post(post):
             Like.query.filter_by(
                 user_id=self.id,
@@ -81,7 +81,7 @@ class User(db.Model, UserMixin):  # type: ignore
 
     # що поставив користувач? користувач лайки/дизлайки
     def get_rate_status(self, post):
-        print('get_rate_status')
+        # print('get_rate_status')
         if not self.is_rated_post(post):
             return None
         else:
@@ -91,7 +91,7 @@ class User(db.Model, UserMixin):  # type: ignore
             return rate
 
     def is_rated_post(self, post):
-        print('is_rated_post')
+        # print('is_rated_post')
         return Like.query.filter(
             Like.user_id == self.id,
             Like.post_id == post.id).count() > 0

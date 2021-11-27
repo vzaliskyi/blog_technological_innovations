@@ -54,7 +54,7 @@ class Post(db.Model):  # type: ignore
     # @hybrid_property
     def get_like_percentage(self):
         num_of_rates = self.total_likes() + self.total_dislikes()
-        print('get_like_percentage')
+        # print('get_like_percentage')
         if num_of_rates == 0:
             return 50
         else:
