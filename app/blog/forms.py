@@ -101,5 +101,6 @@ class FormComment(FlaskForm):
     )
     submit = SubmitField('Опублікувати')
 
+
 class SearchForm(FlaskForm):
     query = StringField('Пощук', validators=[DataRequired(), Length(max=60)])
