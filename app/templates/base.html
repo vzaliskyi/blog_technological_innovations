@@ -36,8 +36,8 @@
             </ul>
           </li>
           <div class="col-5">
-            <form class="d-flex">
-              <input class="form-control me-2" type="search" placeholder="шукати огляд..." aria-label="Search">
+            <form class="d-flex" method="GET" action="{{ url_for('blog_bp_in.search') }}">
+              <input class="form-control me-2" name="query" id="query" type="search" placeholder="шукати огляд..." aria-label="Search">
               <button class="btn btn-light bi bi-search" type="submit"></button>
             </form>
           </div>

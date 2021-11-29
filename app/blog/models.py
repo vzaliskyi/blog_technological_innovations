@@ -1,4 +1,4 @@
-from app import db
+from app import db, search
 # from app.user.models import User
 from datetime import datetime
 # from flask_sqlalchemy import hybrid_property
@@ -19,6 +19,8 @@ class Category(db.Model):  # type: ignore
 
 
 class Post(db.Model):  # type: ignore
+    __searchable__ = ['title']
+
     id = db.Column(db.Integer, primary_key=True)  # type: ignore
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'),
                             nullable=False)  # type: ignore
@@ -97,3 +99,7 @@ class Like(db.Model):  # type: ignore
     def __repr__(self):
         return f'<Like {self.id} {self.user_id} {self.post_id} ' \
                f'{self.status} >'
+
+
+# створюємо індекси для пошуку по таблиці Post
+search.create_index(Post)

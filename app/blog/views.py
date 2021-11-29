@@ -112,7 +112,7 @@ def post_view(post_id):
     form = FormComment()
 
     post = Post.query.get_or_404(post_id)
-    comments = Comment.query.filter_by(post_id=post_id)\
+    comments = Comment.query.filter_by(post_id=post_id) \
         .order_by(Comment.created_at.desc())
     if form.validate_on_submit() and current_user.is_authenticated:
         comment = Comment(user_id=current_user.id, post_id=post.id,
@@ -189,3 +189,31 @@ def posts_by_category(category_id):
     #     abort(404, description="Категорію не знайдено")
     return render_template('posts_by_category.html', posts=posts,
                            category=category)
+
+
+@blog_bp.route('/search')
+def search():
+    print('search')
+    user_query = request.args.get('query')
+    # print(user_query)
+    #
+    # posts = Post.query.filter_by(category_id=1)
+    # print(posts)
+    # print(type(posts))
+    #
+    # print("/--/-/-//-//---/-/-//-/-/-/")
+
+    # здійснюємо пошук по ключовим словам з допомогою пакету flask_msearch
+    result_by_keywords = Post.query.msearch(user_query, limit=20)
+    print(result_by_keywords)
+    print(type(result_by_keywords))
+
+    result_by_substring = Post.query.filter(
+        Post.title.like('%{}%'.format(user_query)))
+
+    # result_by_keywords.join(result_by_keywords, result_by_keywords.id == result_by_keywords.id).all()
+
+    # posts = result_by_keywords.union(result_by_substring)
+
+    return render_template('home.html', title='SearchResults',
+                           posts=result_by_keywords)

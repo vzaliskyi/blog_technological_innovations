@@ -100,3 +100,6 @@ class FormComment(FlaskForm):
                     DataRequired(message='Коментар не може бути пустим!')]
     )
     submit = SubmitField('Опублікувати')
+
+class SearchForm(FlaskForm):
+    query = StringField('Пощук', validators=[DataRequired(), Length(max=60)])
