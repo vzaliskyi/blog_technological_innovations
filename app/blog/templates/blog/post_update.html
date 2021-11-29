@@ -21,9 +21,22 @@
     </form>
   </div>
 <script>
-     $(document).ready(function() {
-     $('#editor').summernote({height: 150});
-     });
+   $(document).ready(function() {
+     $('#editor').summernote({
+       toolbar: [
+          ['style', ['style']],
+          ['font', ['bold', 'underline', 'italic', 'clear']],
+          ['fontname', ['fontname']],
+          ['color', ['color']],
+          ['para', ['ul', 'ol', 'paragraph']],
+          ['table', ['table']],
+          ['insert', ['link', 'picture', 'video']],
+          ['view', ['help']],
+        ],
+        maximumImageFileSize: 358400, // 350 KB
+        height: 300
+      });
+   });
 </script>
 {% endblock main %}
 
