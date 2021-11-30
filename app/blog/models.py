@@ -102,4 +102,4 @@ class Like(db.Model):  # type: ignore
 
 
 # створюємо індекси для пошуку по таблиці Post
-search.create_index(Post)
+# search.create_index(Post)

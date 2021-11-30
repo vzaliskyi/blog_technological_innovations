@@ -208,13 +208,13 @@ def search():
     print(result_by_keywords)
     print(type(result_by_keywords))
 
-    # result_by_substring = Post.query.filter(
-    #     Post.title.like('%{}%'.format(user_query)))
+    result_by_substring = Post.query.filter(
+         Post.title.like('%{}%'.format(user_query)))
 
     # result_by_keywords.join(result_by_keywords, result_by_keywords.id ==
     # result_by_keywords.id).all()
 
-    # posts = result_by_keywords.union(result_by_substring)
+    posts = result_by_keywords.union(result_by_substring)
 
     return render_template('home.html', title='SearchResults',
-                           posts=result_by_keywords)
+                           posts=posts)
