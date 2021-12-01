@@ -54,6 +54,10 @@ class Post(db.Model):  # type: ignore
             Like.post_id == self.id,
             Like.status == False).count()
 
+    def total_coments(self):
+        return Comment.query.filter(
+            Comment.post_id == self.id).count()
+
     def get_like_percentage(self):
         num_of_rates = self.total_likes() + self.total_dislikes()
         # print('get_like_percentage')
@@ -85,6 +89,10 @@ class Comment(db.Model):  # type: ignore
     text = db.Column(db.String(500), nullable=False)  # type: ignore
     created_at = db.Column(db.DateTime, default=datetime.now)  # type: ignore
 
+    # def post_title(self):
+    #     return Post.query.filter_by(
+    #         Post.id==self.post_id)
+
     def __repr__(self):
         return f'<Comment {self.id} {self.user_id} {self.post_id} ' \
                f'{self.text} >'
@@ -99,7 +107,6 @@ class Like(db.Model):  # type: ignore
     def __repr__(self):
         return f'<Like {self.id} {self.user_id} {self.post_id} ' \
                f'{self.status} >'
-
 
 # створюємо індекси для пошуку по таблиці Post
 # search.create_index(Post)

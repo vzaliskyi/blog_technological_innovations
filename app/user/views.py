@@ -1,5 +1,5 @@
 from .models import User
-from app.user.models import Post
+from app.user.models import Post, Comment
 from . import user_bp
 from app import db, bcrypt, mail
 from .forms import (LoginForm, RegistrationForm,
@@ -70,7 +70,15 @@ def logout():
 @login_required
 def account():
     posts = Post.query.filter_by(user_id=current_user.id)
-    return render_template('account.html', posts=posts)
+    posts_id = []
+    for post in posts:
+        posts_id.append(post.id)
+    # коментарі до постів ПОТОЧНОНО користувача і НЕ написані поточним
+    # користувачем
+    comments = Comment.query.filter(Comment.post_id.in_(posts_id),
+                                    Comment.user_id != current_user.id).\
+        order_by(Comment.created_at.desc()).limit(7)
+    return render_template('account.html', posts=posts, comments=comments)
 
 
 def send_reset_token_to_email(user):

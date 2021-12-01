@@ -173,6 +173,9 @@ a.post-created-at{
 #comment-list{
     max-height:410px;
 }
+#comment-account{
+    max-height:830px;
+}
 
 #comment-section {
     border: 2px solid #7E7C73;
