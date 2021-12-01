@@ -1,0 +1,4 @@
+{% from "_render_field.html" import render_post_item_account %}
+{% for post in posts %}
+<div  style="padding-left:19px;padding-right:19px;">{{ render_post_item_account(post) }}</div>
+{% endfor %}
