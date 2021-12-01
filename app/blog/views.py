@@ -162,12 +162,12 @@ def rate_action(post_id, action):
                 current_user.unrate_post(post)
         db.session.commit()
 
-    print('NUM OF LIKES', Like.query.filter(
-        Like.post_id == post_id,
-        Like.status == True).count())
-    print('NUM OF DISLIKES', Like.query.filter(
-        Like.post_id == post_id,
-        Like.status == False).count())
+    # print('NUM OF LIKES', Like.query.filter(
+    #     Like.post_id == post_id,
+    #     Like.status == True).count())
+    # print('NUM OF DISLIKES', Like.query.filter(
+    #     Like.post_id == post_id,
+    #     Like.status == False).count())
 
     return redirect(url_for('blog_bp_in.post_view', post_id=post_id))
 
@@ -176,8 +176,6 @@ def rate_action(post_id, action):
 def user_posts(user_id):
     user = User.query.get_or_404(user_id)
     posts = Post.query.filter_by(user_id=user_id)
-    # if posts.first() is None:
-    #     abort(404, description="Користувача не знайдено")
     return render_template('user_posts.html', posts=posts, user=user)
 
 
@@ -185,8 +183,6 @@ def user_posts(user_id):
 def posts_by_category(category_id):
     category = Category.query.get_or_404(category_id)
     posts = Post.query.filter_by(category_id=category_id)
-    # if posts.first() is None:
-    #     abort(404, description="Категорію не знайдено")
     return render_template('posts_by_category.html', posts=posts,
                            category=category)
 
@@ -195,13 +191,6 @@ def posts_by_category(category_id):
 def search():
     print('search')
     user_query = request.args.get('query')
-    # print(user_query)
-    #
-    # posts = Post.query.filter_by(category_id=1)
-    # print(posts)
-    # print(type(posts))
-    #
-    # print("/--/-/-//-//---/-/-//-/-/-/")
 
     # здійснюємо пошук по ключовим словам з допомогою пакету flask_msearch
     result_by_keywords = Post.query.msearch(user_query, limit=20)
@@ -210,9 +199,6 @@ def search():
 
     result_by_substring = Post.query.filter(
          Post.title.like('%{}%'.format(user_query)))
-
-    # result_by_keywords.join(result_by_keywords, result_by_keywords.id ==
-    # result_by_keywords.id).all()
 
     posts = result_by_keywords.union(result_by_substring)
 
