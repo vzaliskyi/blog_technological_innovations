@@ -1,14 +1,18 @@
-from .models import User
-from app.user.models import Post, Comment
-from . import user_bp
-from app import db, bcrypt, mail
-from .forms import (LoginForm, RegistrationForm, RequestPasswordResetForm,
-                    ResetPasswordForm, AccountUpdateForm, PasswordUpdateForm)
+import os
+import secrets
+
+from PIL import Image
 from flask import render_template, redirect, url_for, flash, request
 from flask_login import login_user, current_user, logout_user, login_required
 from flask_mail import Message
-from PIL import Image
-import os, secrets
+
+from app import db, bcrypt, mail
+from app.user.models import Post, Comment
+from . import user_bp
+from .forms import (LoginForm, RegistrationForm, RequestPasswordResetForm,
+                    ResetPasswordForm, AccountUpdateForm, PasswordUpdateForm)
+from .models import User
+
 
 def save_picture(form_picture):
     rendom_hex = secrets.token_hex(8)

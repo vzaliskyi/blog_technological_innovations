@@ -17,7 +17,6 @@ def post_create():
         category_id = form.category.data
         title = form.title.data
         content = form.content.data
-
         # print(category_id, title, content)
         category = db.session.query(Category.id).filter(
             Category.id == category_id)

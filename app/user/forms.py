@@ -31,7 +31,6 @@ def check_spaces(form, string):
 
 
 def check_file_size(form, field):
-    max_bytes = 3000000
     if field.data:
         if len(field.data.read()) > 3000000:
             raise ValidationError('Ромір файлу не повинен перевищувати 3 MB')
