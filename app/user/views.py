@@ -28,6 +28,7 @@ def save_picture(form_picture):
     i.save(picture_path)
     return picture_fn
 
+
 @user_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
