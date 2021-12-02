@@ -1,6 +1,6 @@
 from . import blog_bp
 from .forms import FormPostCreate, FormPostUpdate, FormComment
-from app import db, search
+from app import db
 from .models import Category, Post, Like, Comment
 from app.user.models import User
 from flask import redirect, url_for, flash, request, render_template, abort
