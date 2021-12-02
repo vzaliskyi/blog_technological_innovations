@@ -143,8 +143,7 @@ class TestLoginRegistration(BaseTestCase):
             self.assertMessageFlashed('Користувач успішно увійшов у свій '
                                       'аккаунт!', category='success')
             self.assertTrue(
-                '<legend class="border-bottom mb-4">Інформація '
-                'про мене</legend>' in response.get_data(as_text=True)
+                'Інформація про мене' in response.get_data(as_text=True)
             )
             self.assertTrue(
                 '<em class="card-title text-muted">'

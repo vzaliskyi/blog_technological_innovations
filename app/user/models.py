@@ -110,11 +110,10 @@ class User(db.Model, UserMixin):  # type: ignore
             result['comments'] = result['comments']+post.total_comments()
         return result
 
-    # def get_dislikes_count(self):
-    #     # print('is_rated_post')
-    #     return Like.query.filter(
-    #         Like.user_id == self.id,
-    #         Like.post_id == post.id).count() > 0
+    def get_liked_posts(self):
+        return db.session.query(Post).join(Like).\
+            filter(Like.post_id == Post.id, Like.status == True).\
+            filter(Like.user_id == self.id).order_by(Post.created_at.desc())
 
     def __repr__(self):
         return f"User('{self.username}', '{self.email}')"

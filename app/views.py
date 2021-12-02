@@ -1,4 +1,4 @@
-from app import app
+from app import app, db
 from app.user.models import User, Comment, Like, Post
 from flask import render_template, redirect, url_for, request, flash
 
@@ -7,6 +7,8 @@ from flask import render_template, redirect, url_for, request, flash
 def home():
     # print("all_posts")
     posts = Post.query.order_by(Post.created_at.desc())
+    # posts = db.session.query(Post).join(Like).filter(Like.post_id==Post.id,
+    # Like.status == True).filter(Like.user_id == 3).all()
     # posts = Post.query.order_by(Post.user_id)
     # print('кількість лайків', posts.first().total_likes())
     # posts = Post.query.all()

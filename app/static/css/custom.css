@@ -178,7 +178,7 @@ a.post-created-at{
 }
 
 #posts-info{
-    height:500px;
+    height:600px;
 }
 
 #comment-section {
@@ -250,7 +250,7 @@ a.post-created-at{
      right:0;
 }
 
-.author-profile-section {
+.blogger-profile-section {
     overflow:auto;
     margin:auto;
     width:90%;
@@ -265,4 +265,13 @@ a.post-created-at{
     font-size: 20px;
     color: #464033;
     font-weight: 400;
+}
+
+#show-liked-link{
+    color: #8b0000;
+    text-decoration: none;
+}
+#show-liked-link:hover{
+    color: #ff2929;
+    text-decoration: underline;
 }

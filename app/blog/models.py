@@ -54,7 +54,7 @@ class Post(db.Model):  # type: ignore
             Like.post_id == self.id,
             Like.status == False).count()
 
-    def total_coments(self):
+    def total_comments(self):
         return Comment.query.filter(
             Comment.post_id == self.id).count()
 
