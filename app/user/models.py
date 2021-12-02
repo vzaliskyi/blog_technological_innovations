@@ -70,7 +70,13 @@ class User(db.Model, UserMixin):  # type: ignore
     def change_rate(self, post):
         # print('change_rate')
         rate = Like.query.filter_by(user_id=self.id, post_id=post.id).first()
-        rate.status = not rate.status
+        self.unrate_post(post)
+        if rate.status is True:
+            # print('set dislike')
+            self.dislike_post(post)
+        else:
+            # print('set like')
+            self.like_post(post)
 
     def unrate_post(self, post):
         # print('unrate_post')

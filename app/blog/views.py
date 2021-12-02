@@ -190,15 +190,14 @@ def posts_by_category(category_id):
 def search():
     print('search')
     user_query = request.args.get('query')
-
+    print('user_query', user_query)
     # здійснюємо пошук по ключовим словам з допомогою пакету flask_msearch
     result_by_keywords = Post.query.msearch(user_query, limit=20)
     print(result_by_keywords)
     print(type(result_by_keywords))
 
     result_by_substring = Post.query.filter(
-         Post.title.like('%{}%'.format(user_query)))
-
+        Post.title.ilike(f'%{user_query}%'))
     posts = result_by_keywords.union(result_by_substring)
 
     return render_template('home.html', title='SearchResults',
