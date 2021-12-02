@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block main %}
+  {% from "_render_field.html" import render_field_lr %}
+  <div class="content-section pb-2 " style="margin:auto;width:35%">
+    <div class="form-control">
+      <form method="POST" action="{{ url_for('user_bp_in.account_update') }}" class="pt-1" enctype="multipart/form-data">
+
+        {{form_account.csrf_token}}
+        <fieldset class="form-group">
+          <legend class="border-bottom mb-4">Редагування профілю</legend>
+            {{ render_field_lr(form_account.picture) }}
+            {{ render_field_lr(form_account.username) }}
+          </fieldset>
+        <div class="form-group pt-4 pb-2">
+          {{ form_account.submit(class="btn btn-outline-secondary") }}
+        </div>
+      </form>
+    </div>
+    <div class="form-control mt-3">
+      <form method="POST" action="{{ url_for('user_bp_in.password_update') }}" class="pb-3" >
+        {{form_password.csrf_token}}
+        <fieldset class="form-group">
+          <legend class="border-bottom mb-4">Зміна паролю</legend>
+          {{ render_field_lr(form_password.old_password) }}
+        </fieldset>
+        <small class="text-muted pt-2">Для скидання паролю - підтвердіть свій старий пароль, після чого на вашу електронну адресу буде надіслано лист з послианням на зміну паролю</small>
+        <div class="form-group pt-4 pb-2">
+          {{ form_password.submit(class="btn btn-outline-secondary", action='change_password') }}
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock main %}

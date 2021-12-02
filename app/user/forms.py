@@ -4,6 +4,8 @@ from flask_login import current_user
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import DataRequired, Email, Regexp, Length, EqualTo, \
     ValidationError
+from flask_wtf.file import FileField, FileAllowed
+from pathlib import Path
 
 
 def check_letters(form, string):
@@ -26,6 +28,13 @@ def check_symbols(form, string):
 def check_spaces(form, string):
     if ' ' in string.data:
         raise ValidationError('Пароль не повинен містити пробіли')
+
+
+def check_file_size(form, field):
+    max_bytes = 3000000
+    if field.data:
+        if len(field.data.read()) > 3000000:
+            raise ValidationError('Ромір файлу не повинен перевищувати 3 MB')
 
 
 class LoginForm(FlaskForm):
@@ -112,5 +121,34 @@ class ResetPasswordForm(FlaskForm):
     confirm_password = PasswordField(
         'Підтвердити Пароль',
         validators=[DataRequired(),
-                    EqualTo('new_password')])
+                    EqualTo('new_password',
+                            message='Паролі повинні співпадати')])
     submit = SubmitField('Скинути пароль')
+
+
+class AccountUpdateForm(FlaskForm):
+    username = StringField(
+        "Ім'я користувача",
+        validators=[Length(min=3, max=30,
+                           message='Поле повинно бути довжиною '
+                                   'від 3 до 30 симолів!'),
+                    DataRequired(message='Заповніть це поле!'),
+                    Regexp('^[A-Za-z][A-Za-z0-9_.]*$', 0,
+                           "Ім'я повинно містити тільки англійські літери, "
+                           "цифри, крапку або нижнє підкреслення!")
+                    ]
+    )
+    picture = FileField('Фото профілю',
+                        validators=[FileAllowed(['jpg', 'png', 'jpeg']),
+                                    check_file_size])
+    submit = SubmitField('Оновити')
+
+
+class PasswordUpdateForm(FlaskForm):
+    old_password = PasswordField(
+        'Старий пароль',
+        validators=[
+                    DataRequired(message='Заповніть це поле!'),
+                   ]
+    )
+    submit = SubmitField('Підтвердити')

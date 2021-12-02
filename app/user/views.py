@@ -2,12 +2,27 @@ from .models import User
 from app.user.models import Post, Comment
 from . import user_bp
 from app import db, bcrypt, mail
-from .forms import (LoginForm, RegistrationForm,
-                    RequestPasswordResetForm, ResetPasswordForm)
+from .forms import (LoginForm, RegistrationForm, RequestPasswordResetForm,
+                    ResetPasswordForm, AccountUpdateForm, PasswordUpdateForm)
 from flask import render_template, redirect, url_for, flash, request
 from flask_login import login_user, current_user, logout_user, login_required
 from flask_mail import Message
+from PIL import Image
+import os, secrets
 
+def save_picture(form_picture):
+    rendom_hex = secrets.token_hex(8)
+    f_name, f_ext = os.path.splitext(form_picture.filename)
+    picture_fn = rendom_hex + f_ext
+    picture_path = os.path.join(user_bp.root_path,
+                                '../static/profile_pictures', picture_fn)
+    # form_picture.save(picture_path)
+    # return  picture_fn
+    output_size = (800, 800)
+    i = Image.open(form_picture)
+    i.thumbnail(output_size)
+    i.save(picture_path)
+    return picture_fn
 
 @user_bp.route('/login', methods=['GET', 'POST'])
 def login():
@@ -71,24 +86,62 @@ def logout():
 def account():
     posts = Post.query.filter_by(user_id=current_user.id).\
         order_by(Post.created_at.desc())
-    # posts_id = []
-    # for post in posts:
-    #     posts_id.append(post.id)
-    # comments = Comment.query.filter(Comment.post_id.in_(posts_id),
-    #                                 Comment.user_id != current_user.id).\
-    #     order_by(Comment.created_at.desc()).limit(7)
-
     # коментарі до постів ПОТОЧНОНО користувача і НЕ написані поточним
     # користувачем
     comments = db.session.query(Comment).join(Post).\
         filter(Comment.post_id == Post.id,
-               Comment.user_id != current_user.id).\
-        filter(Post.user_id == current_user.id).\
+               Comment.user_id != current_user.id,
+               Post.user_id == current_user.id).\
         order_by(Comment.created_at.desc())
 
     return render_template('account.html', posts=posts,
                            liked_posts=current_user.get_liked_posts(),
                            comments=comments)
+
+
+@user_bp.route("/account/update", methods=['GET', 'POST'])
+@login_required
+def account_update():
+    form_account = AccountUpdateForm()
+    form_password = PasswordUpdateForm()
+    if request.method == 'GET':
+        form_account.username.data = current_user.username
+    elif form_account.validate_on_submit():
+        if form_account.picture.data:
+            picture_file = save_picture(form_account.picture.data)
+            current_user.picture = picture_file
+        current_user.username = form_account.username.data
+        try:
+            db.session.commit()
+            flash('Дані успішно оновлено', 'info')
+            return redirect(url_for('user_bp_in.account'))
+        except:
+            db.session.rollback()
+            flash('Помилка при оновленні даних', 'danger')
+            return redirect(url_for('user_bp_in.account'))
+    return render_template('account_update.html', form_account=form_account,
+                           form_password=form_password)
+
+
+@user_bp.route("/account/update/password", methods=['GET', 'POST'])
+@login_required
+def password_update():
+    form_password = PasswordUpdateForm()
+    form_account = AccountUpdateForm()
+    if form_password.validate_on_submit():
+        if current_user.verify_password(form_password.old_password.data):
+            send_reset_token_to_email(current_user)
+            flash('Лист з посиланням на відновлення паролю було надіслано на '
+                  'вашу пошту', 'info')
+            return redirect(url_for('user_bp_in.account'))
+        else:
+            flash('Неправильний старий пароль', 'danger')
+            return redirect(url_for('user_bp_in.account_update'))
+    else:
+        form_account.username.data = current_user.username
+        return render_template('account_update.html',
+                               form_account=form_account,
+                               form_password=form_password)
 
 
 def send_reset_token_to_email(user):
@@ -118,8 +171,8 @@ def request_password_reset():
 
 @user_bp.route("/reset_password/<token>", methods=['GET', 'POST'])
 def reset_password(token):
-    if current_user.is_authenticated:
-        return redirect(url_for('home'))
+    # if current_user.is_authenticated:
+    #     return redirect(url_for('home'))
     user = User.verify_reset_token(token)
     if user is None:
         flash('Посилання на зміну паролю більше не активне', 'warning')

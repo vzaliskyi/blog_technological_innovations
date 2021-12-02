@@ -113,7 +113,7 @@ class User(db.Model, UserMixin):  # type: ignore
     def get_liked_posts(self):
         return db.session.query(Post).join(Like).\
             filter(Like.post_id == Post.id, Like.status == True).\
-            filter(Like.user_id == self.id).order_by(Post.created_at.desc())
+            filter(Like.user_id == self.id).order_by(Like.id.desc())
 
     def __repr__(self):
         return f"User('{self.username}', '{self.email}')"

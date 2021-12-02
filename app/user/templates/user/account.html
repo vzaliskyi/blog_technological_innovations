@@ -5,9 +5,10 @@
     <div id="profile-info" class="card col-5">
       <div class="p-2">
         <legend class="border-bottom text-center text-title p-1">Інформація про мене</legend>
-        <div align="right"><a href="#" role="button" class="btn btn-outline-secondary btn-sm bi bi-pencil-square m-0" id="edit-button"> Редагувати дані</a></div>
+        <div align="right"><a href="{{url_for('user_bp_in.account_update')}}" role="button" class="btn btn-outline-secondary btn-sm bi bi-pencil-square m-0" id="edit-button"> Редагувати дані</a></div>
         <div align="center">
           <img src="{{url_for('static',filename='profile_pictures/' + current_user.picture)}}" class="rounded-circle profile-img" alt="profile-image">
+
           <div class="card-body">
             <h5 class="card-title">{{ current_user.username }}</h5>
             <mark><em class="card-title text-muted">{{ current_user.email }}</em></mark>
@@ -85,6 +86,7 @@
       {% endif %}
     </div>
   </div>
+
 
 <script>
  $(document).ready(function(){
