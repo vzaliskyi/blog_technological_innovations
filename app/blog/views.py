@@ -197,7 +197,7 @@ def search():
     print(type(result_by_keywords))
 
     result_by_substring = Post.query.filter(
-         Post.title.ilike(f'%{user_query}%'))
+        Post.title.ilike(f'%{user_query}%'))
     posts = result_by_keywords.union(result_by_substring)
 
     return render_template('home.html', title='SearchResults',
