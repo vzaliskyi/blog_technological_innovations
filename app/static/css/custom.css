@@ -54,11 +54,11 @@ a.article-title:hover {
 }
 
 .profile-img{
+    display: block;
     height: 150px;
     width: 150px;
     border: 1px solid #7E7C73;
 }
-
 
 .post-section {
     background: white;
@@ -69,7 +69,6 @@ a.article-title:hover {
     margin:auto;
     width:70%
 }
-
 
 .post-author-img {
     height: 35px;
@@ -173,8 +172,13 @@ a.post-created-at{
 #comment-list{
     max-height:410px;
 }
-#comment-account{
+
+.comment-account{
     max-height:830px;
+}
+
+#posts-info{
+    height:600px;
 }
 
 #comment-section {
@@ -193,4 +197,81 @@ a.post-created-at{
 
 .wide-hr{
     border-top: 1px solid black;
+}
+
+.comment-post-title {
+    font-size: 20px;
+    color: #464033;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.comment-post-title:hover {
+    color: #035CA3;
+    text-decoration: underline;
+}
+
+
+.article-title-small{
+    font-size: 20px;
+    color: #464033;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.article-title-small:hover{
+    color: #035CA3;
+    text-decoration: underline;
+}
+
+.base-article-property{
+    margin:5px 15px;
+    padding: 7px 12px;
+    text-align: left;
+}
+
+.base-article-property:hover{
+    background: #f8f9fa;
+}
+
+.on-hover-change-bg:hover{
+    background: #f8f9fa;
+}
+
+.please-scroll{
+    height: calc(100vh - 110px);
+    overflow-y: scroll;
+}
+
+#edit-button {
+     margin:5px;
+     position:sticky;
+     top:0;
+     right:0;
+}
+
+.blogger-profile-section {
+    overflow:auto;
+    margin:auto;
+    width:90%;
+}
+.profile-section {
+    overflow:auto;
+    margin:auto;
+    width:50%;
+}
+
+.text-title {
+    font-size: 20px;
+    color: #464033;
+    font-weight: 400;
+}
+
+#show-liked-link{
+    color: #8b0000;
+    text-decoration: none;
+}
+#show-liked-link:hover{
+    color: #ff2929;
+    text-decoration: underline;
 }

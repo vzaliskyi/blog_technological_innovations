@@ -96,5 +96,24 @@ class User(db.Model, UserMixin):  # type: ignore
             Like.user_id == self.id,
             Like.post_id == post.id).count() > 0
 
+    def get_statistic(self):
+        posts = Post.query.filter_by(user_id=self.id)
+        result = {
+            'posts_num': posts.count(),
+            'likes': 0,
+            'dislikes': 0,
+            'comments': 0
+        }
+        for post in posts:
+            result['likes'] = result['likes'] + post.total_likes()
+            result['dislikes'] = result['dislikes'] + post.total_dislikes()
+            result['comments'] = result['comments'] + post.total_comments()
+        return result
+
+    def get_liked_posts(self):
+        return db.session.query(Post).join(Like).\
+            filter(Like.post_id == Post.id, Like.status == True).\
+            filter(Like.user_id == self.id).order_by(Post.created_at.desc())
+
     def __repr__(self):
         return f"User('{self.username}', '{self.email}')"

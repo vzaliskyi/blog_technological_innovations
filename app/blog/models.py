@@ -54,10 +54,6 @@ class Post(db.Model):  # type: ignore
             Like.post_id == self.id,
             Like.status == False).count()
 
-    def total_coments(self):
-        return Comment.query.filter(
-            Comment.post_id == self.id).count()
-
     def get_like_percentage(self):
         num_of_rates = self.total_likes() + self.total_dislikes()
         # print('get_like_percentage')

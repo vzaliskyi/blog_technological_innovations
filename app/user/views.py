@@ -69,16 +69,26 @@ def logout():
 @user_bp.route("/account")
 @login_required
 def account():
-    posts = Post.query.filter_by(user_id=current_user.id)
-    posts_id = []
-    for post in posts:
-        posts_id.append(post.id)
+    posts = Post.query.filter_by(user_id=current_user.id).\
+        order_by(Post.created_at.desc())
+    # posts_id = []
+    # for post in posts:
+    #     posts_id.append(post.id)
+    # comments = Comment.query.filter(Comment.post_id.in_(posts_id),
+    #                                 Comment.user_id != current_user.id).\
+    #     order_by(Comment.created_at.desc()).limit(7)
+
     # коментарі до постів ПОТОЧНОНО користувача і НЕ написані поточним
     # користувачем
-    comments = Comment.query.filter(Comment.post_id.in_(posts_id),
-                                    Comment.user_id != current_user.id).\
-        order_by(Comment.created_at.desc()).limit(7)
-    return render_template('account.html', posts=posts, comments=comments)
+    comments = db.session.query(Comment).join(Post).\
+        filter(Comment.post_id == Post.id,
+               Comment.user_id != current_user.id).\
+        filter(Post.user_id == current_user.id).\
+        order_by(Comment.created_at.desc())
+
+    return render_template('account.html', posts=posts,
+                           liked_posts=current_user.get_liked_posts(),
+                           comments=comments)
 
 
 def send_reset_token_to_email(user):
