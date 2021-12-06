@@ -7,7 +7,6 @@ from flask import redirect, url_for, flash, request, render_template, abort
 from flask_login import current_user, login_required
 
 
-
 @blog_bp.route('/post/create', methods=['GET', 'POST'])
 @login_required
 def post_create():
