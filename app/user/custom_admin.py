@@ -48,14 +48,13 @@ class UserModelView(ModelView):
                                   ]),
         email=dict(validators=[DataRequired(message='Заповніть це поле!'),
                                Email(message='Некоректна email адреса!')]),
-        password=dict(label='Пароль', validators=[Length(min=8, max=30,
-                                                         message='Поле повинно бути довжиною '
-                                                                 'від 3 до 30 симолів!'),
-                                                  DataRequired(
-                                                      message='Заповніть це поле!'),
-                                                  check_letters, check_digits,
-                                                  check_symbols,
-                                                  check_spaces]),
+        password=dict(label='Пароль',
+                      validators=[Length(min=8, max=30,
+                                         message='Поле повинно бути довжиною '
+                                                 'від 3 до 30 симолів!'),
+                                  DataRequired(message='Заповніть це поле!'),
+                                  check_letters, check_digits, check_symbols,
+                                  check_spaces]),
     )
 
     def is_accessible(self):
