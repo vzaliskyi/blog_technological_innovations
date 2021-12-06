@@ -1,6 +1,7 @@
-from app import app, db
+from app import db
 from app.user.models import User, Comment, Like, Post
-from flask import render_template, redirect, url_for, request, flash
+from flask import render_template, redirect, url_for, request, flash, \
+    current_app as app
 
 
 @app.route('/')

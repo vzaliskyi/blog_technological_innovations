@@ -142,12 +142,18 @@ class AccountUpdateForm(FlaskForm):
                                     check_file_size])
     submit = SubmitField('Оновити')
 
+    def validate_username(self, field):
+        if field.data != current_user.username:
+            if User.query.filter_by(username=field.data).first():
+                raise ValidationError(
+                    "Користувач з таким іменем уже зареєстрований!")
+
 
 class PasswordUpdateForm(FlaskForm):
     old_password = PasswordField(
         'Старий пароль',
         validators=[
-                    DataRequired(message='Заповніть це поле!'),
-                   ]
+            DataRequired(message='Заповніть це поле!'),
+        ]
     )
     submit = SubmitField('Підтвердити')

@@ -1,17 +1,15 @@
 import os
 import secrets
-
 from PIL import Image
 from flask import render_template, redirect, url_for, flash, request
 from flask_login import login_user, current_user, logout_user, login_required
 from flask_mail import Message
-
 from app import db, bcrypt, mail
 from app.user.models import Post, Comment
 from . import user_bp
-from .forms import (LoginForm, RegistrationForm, RequestPasswordResetForm,
-                    ResetPasswordForm, AccountUpdateForm, PasswordUpdateForm)
 from .models import User
+from .forms import *
+from ..blog.forms import *
 
 
 def save_picture(form_picture):
@@ -89,14 +87,14 @@ def logout():
 @user_bp.route("/account")
 @login_required
 def account():
-    posts = Post.query.filter_by(user_id=current_user.id).\
+    posts = Post.query.filter_by(user_id=current_user.id). \
         order_by(Post.created_at.desc())
     # коментарі до постів ПОТОЧНОНО користувача і НЕ написані поточним
     # користувачем
-    comments = db.session.query(Comment).join(Post).\
+    comments = db.session.query(Comment).join(Post). \
         filter(Comment.post_id == Post.id,
                Comment.user_id != current_user.id,
-               Post.user_id == current_user.id).\
+               Post.user_id == current_user.id). \
         order_by(Comment.created_at.desc())
 
     return render_template('account.html', posts=posts,
@@ -123,7 +121,7 @@ def account_update():
         except:
             db.session.rollback()
             flash('Помилка при оновленні даних', 'danger')
-            return redirect(url_for('user_bp_in.account'))
+            return redirect(url_for('user_bp_in.account_update'))
     return render_template('account_update.html', form_account=form_account,
                            form_password=form_password)
 

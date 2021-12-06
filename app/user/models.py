@@ -1,7 +1,8 @@
 from app.blog.models import Comment, Like, Post, Category
-from app import db, bcrypt, login_manager, app
+from app import db, bcrypt, login_manager
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask_login import UserMixin
+from flask import current_app as app
 
 
 @login_manager.user_loader
@@ -26,14 +27,17 @@ class User(db.Model, UserMixin):  # type: ignore
     # type: ignore
     picture = db.Column(db.String(20), nullable=False,
                         server_default='default.jpg')  # type: ignore
+    admin = db.Column(db.Boolean, default=False)  # type: ignore
 
     comment = db.relationship('Comment', backref='user_br', lazy=True)
     # type: ignore
     like = db.relationship('Like', backref='user_br', lazy=True)
     # type: ignore
     posts = db.relationship('Post', backref='user_br', lazy=True)
-
     # type: ignore
+
+    def is_admin(self):
+        return self.admin
 
     def verify_password(self, pwd):
         return bcrypt.check_password_hash(self.password, pwd)

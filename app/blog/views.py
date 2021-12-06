@@ -7,6 +7,7 @@ from flask import redirect, url_for, flash, request, render_template, abort
 from flask_login import current_user, login_required
 
 
+
 @blog_bp.route('/post/create', methods=['GET', 'POST'])
 @login_required
 def post_create():
@@ -195,7 +196,6 @@ def search():
     result_by_keywords = Post.query.msearch(user_query, limit=20)
     print(result_by_keywords)
     print(type(result_by_keywords))
-
     result_by_substring = Post.query.filter(
         Post.title.ilike(f'%{user_query}%'))
     posts = result_by_keywords.union(result_by_substring)

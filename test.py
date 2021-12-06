@@ -1,7 +1,10 @@
 import unittest
 from flask_testing import TestCase
-from app import db, app
+from app import db, create_app
 
+app = create_app()
+app.config.update(SQLALCHEMY_DATABASE_URI='sqlite:///testing.db',
+                  SECRET_KEY='asfdsfsaaffdf', WTF_CSRF_ENABLED=False)
 # from flask import url_for
 from app.user.models import User
 from app.blog.models import Category, Post, Comment
@@ -9,9 +12,6 @@ from flask_login import current_user
 
 
 class BaseTestCase(TestCase):
-    app.config.update(SQLALCHEMY_DATABASE_URI='sqlite:///testing.db',
-                      SECRET_KEY='asfdsfsaaffdf', WTF_CSRF_ENABLED=False)
-    db.drop_all()
 
     def create_app(self):
         return app

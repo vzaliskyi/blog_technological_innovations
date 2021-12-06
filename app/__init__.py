@@ -5,18 +5,36 @@ from flask_login import LoginManager
 from flask_mail import Mail
 from flask_msearch import Search
 
-app = Flask(__name__)
-app.config.from_object('config')
-db = SQLAlchemy(app)
+
+# app = Flask(__name__)
+# app.config.from_object('config')
+db = SQLAlchemy()
 bcrypt = Bcrypt()
-login_manager = LoginManager(app)
-mail = Mail(app)
-search = Search(app)
+login_manager = LoginManager()
+mail = Mail()
+search = Search()
 
-from .blog import blog_bp  # pylint: disable=import-error
-from .user import user_bp  # pylint: disable=import-error
-app.register_blueprint(blog_bp, url_prefix='')
-app.register_blueprint(user_bp, url_prefix='/auth')
+def create_app(config_filename=None):
+    app = Flask(__name__, instance_relative_config=True)
+    with app.app_context():
+        app.config.from_object('config')
+        db.init_app(app)
+        bcrypt.init_app(app)
+        login_manager.init_app(app)
+        mail.init_app(app)
+        search.init_app(app)
+        from .blog import blog_bp  # pylint: disable=import-error
+        from .user import user_bp  # pylint: disable=import-error
+        app.register_blueprint(blog_bp, url_prefix='')
+        app.register_blueprint(user_bp, url_prefix='/auth')
+        from .user import create_module as admin_create_module
+        admin_create_module(app)
+        from app import views  # noqa # linting: disable=unused-import
+        from app import forms  # noqa # linting: disable=unused-import
+    return app
 
-from app import views  # noqa # linting: disable=unused-import
-from app import forms  # noqa # linting: disable=unused-import
+
+
+
+
+
