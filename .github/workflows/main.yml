@@ -12,6 +12,6 @@ jobs:
       uses: alexanderdamiani/pylinter@v1.2.0
       with:
         python-root: '.'
-        flake8-flags: '--count --show-source --statistics --ignore=E402,F401,F722,F541,E126,E722,E712'
+        flake8-flags: '--count --show-source --statistics --ignore=E402,F401,F405, F722,F541,E126,E722,E712'
         mypy-flags: '--ignore-missing-imports --exclude=app/blog/models.py'
         fail-on-isort: false

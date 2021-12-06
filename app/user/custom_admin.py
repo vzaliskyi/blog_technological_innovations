@@ -1,10 +1,9 @@
 from flask import redirect, url_for, flash
 from flask_admin import BaseView, expose, AdminIndexView
 from flask_admin.contrib.sqla import ModelView
-from wtforms import widgets
 from flask_admin.contrib.fileadmin import FileAdmin
 from .forms import *
-from ..blog.forms import *
+from ..blog.forms import check_text_length
 
 
 class MyHomeView(AdminIndexView):

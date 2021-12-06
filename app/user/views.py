@@ -8,8 +8,8 @@ from app import db, bcrypt, mail
 from app.user.models import Post, Comment
 from . import user_bp
 from .models import User
-from .forms import *
-from ..blog.forms import *
+from .forms import LoginForm, RegistrationForm, AccountUpdateForm,\
+    PasswordUpdateForm, ResetPasswordForm, RequestPasswordResetForm
 
 
 def save_picture(form_picture):

@@ -32,9 +32,3 @@ def create_app(config_filename=None):
         from app import views  # noqa # linting: disable=unused-import
         from app import forms  # noqa # linting: disable=unused-import
     return app
-
-
-
-
-
-
