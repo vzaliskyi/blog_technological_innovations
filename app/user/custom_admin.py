@@ -1,8 +1,11 @@
 from flask import redirect, url_for, flash
 from flask_admin import BaseView, expose, AdminIndexView
+from flask_login import current_user
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.contrib.fileadmin import FileAdmin
-from .forms import *
+from .forms import check_letters, check_digits, check_symbols, check_spaces
+from wtforms.validators import Length, DataRequired, Regexp, Email
+
 from ..blog.forms import check_text_length
 
 

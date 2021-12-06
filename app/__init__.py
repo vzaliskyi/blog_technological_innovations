@@ -5,7 +5,6 @@ from flask_login import LoginManager
 from flask_mail import Mail
 from flask_msearch import Search
 
-
 # app = Flask(__name__)
 # app.config.from_object('config')
 db = SQLAlchemy()
@@ -13,6 +12,7 @@ bcrypt = Bcrypt()
 login_manager = LoginManager()
 mail = Mail()
 search = Search()
+
 
 def create_app(config_filename=None):
     app = Flask(__name__, instance_relative_config=True)
