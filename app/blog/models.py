@@ -46,25 +46,25 @@ class Post(db.Model):  # type: ignore
         return Comment.query.filter(Comment.post_id == self.id).count()
 
     @hybrid_property
-    def total_likes(self):
+    def total_likes(self):  # type: ignore
         return Like.query.filter(
             Like.post_id == self.id,
             Like.status == True).count()
 
     @total_likes.expression
-    def total_likes(cls):
+    def total_likes(cls):  # type: ignore
         return select([func.count(Like.status)]).where(
             and_(Like.post_id == cls.id, Like.status == True)).label(
             'total_likes')
 
     @hybrid_property
-    def total_dislikes(self):
+    def total_dislikes(self):  # type: ignore
         return Like.query.filter(
             Like.post_id == self.id,
             Like.status == False).count()
 
     @total_dislikes.expression
-    def total_dislikes(cls):
+    def total_dislikes(cls):  # type: ignore
         return select([func.count(Like.status)]).where(
             and_(Like.post_id == cls.id, Like.status == False)).label(
             'total_dislikes')
