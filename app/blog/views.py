@@ -185,7 +185,7 @@ def user_posts(id):
 def posts_by_category(id):
     print("posts_by_category")
     print(id)
-    category = Category.query.get_or_404(id)
+    Category.query.get_or_404(id)
     posts, sort_by = handle_posts_view(
         Post.query.filter_by(category_id=id),
         request.args
@@ -205,7 +205,8 @@ def search():
     print(result_by_keywords)
     print(type(result_by_keywords))
     result_by_substring = Post.query.filter(
-        Post.title.ilike(f'%{user_query}%'))
+        Post.title.ilike(f'%{user_query}%')
+    )
     posts = result_by_keywords.union(result_by_substring)
 
     return render_template('home.html', title='SearchResults',
