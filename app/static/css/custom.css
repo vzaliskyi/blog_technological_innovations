@@ -20,7 +20,7 @@ body {
     padding: 10px 20px;
     border: 2px solid #7E7C73;
     border-radius: 5px;
-    margin-bottom: 20px;
+    margin: 5px 15px;
 }
 
 a.author-name{
@@ -271,11 +271,38 @@ a.post-created-at{
     color: #8b0000;
     text-decoration: none;
 }
+
 #show-liked-link:hover{
     color: #ff2929;
     text-decoration: underline;
 }
+
 .short-form{
     margin:auto;
     width:35%;
+}
+
+.separator {
+    border-right: thin solid #E5E8E8;
+    padding-right: 5px;
+    margin-right: 5px;
+}
+
+.pagination {
+    margin: 10px 15px;
+}
+
+.page-link {
+    color: #25282a;
+}
+
+.page-link:hover {
+    background: #bdbebf;
+    color: white;
+}
+
+
+.page-item.active .page-link {
+    background: #25282a;
+    color: white;
 }

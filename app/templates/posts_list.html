@@ -1,4 +1,7 @@
-{% from "_render_field.html" import render_post_item %}
-{% for post in posts %}
+{% from "_render_field.html" import render_post_item, pagination_block %}
+
+{% for post in posts.items %}
    {{ render_post_item(post) }}
 {% endfor %}
+
+{{ pagination_block(posts) }}

@@ -91,9 +91,9 @@
 <script>
  $(document).ready(function(){
     {% if not posts.first() %}
+      $("#posts-info").hide();
       $("#profile-main").addClass("profile-section");
       $("#profile-info").toggleClass("col-5");
-      $("#posts-info").hide();
     {% endif %}
  });
 
