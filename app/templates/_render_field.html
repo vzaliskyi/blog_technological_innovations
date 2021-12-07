@@ -45,11 +45,16 @@
     <article class="media article-section">
     <div class="media-body">
       <div class="article-metadata">
-        <a class="author-name separator" href="{{url_for('blog_bp_in.user_posts', user_id=post.user_br.id)}}">{{ post.user_br.username }}</a>
-        <a class="separator" href="{{url_for('blog_bp_in.posts_by_category', category_id=post.category_br.id)}}">
+        <a class="author-name separator" href="{{url_for('blog_bp_in.user_posts', id=post.user_br.id)}}">{{ post.user_br.username }}</a>
+        <a class="separator" href="{{url_for('blog_bp_in.posts_by_category', id=post.category_br.id)}}">
           <small class="link-dark">#{{ post.category_br.name }}</small>
         </a>
         <small class="text-muted">{{ post.created_at.strftime('%d.%m.%Y') }}</small>
+        <div class="align-right">
+          <small class="text-muted"><i class="bi bi-hand-thumbs-up"></i>{{post.total_likes}}</small>
+          <small class="text-muted"><i class="bi bi-hand-thumbs-down"></i>{{post.total_dislikes}}</small>
+          <small class="text-muted"><i class="bi bi-chat-right-dots"></i> {{post.total_comments()}}</small>
+        </div>
       </div>
       <h2><a class="article-title" href="{{url_for('blog_bp_in.post_view', post_id=post.id)}}">{{ post.title }}</a></h2>
       <!-- <p class="article-content"> *зміст публікації* </p> -->
@@ -62,7 +67,7 @@
   <article class="media article-section base-article-property">
     <div class="media-body">
       <div class="article-metadata">
-        <a class="separator" href="{{url_for('blog_bp_in.posts_by_category', category_id=post.category_br.id)}}">
+        <a class="separator" href="{{url_for('blog_bp_in.posts_by_category', id=post.category_br.id)}}">
           <small class="link-dark">#{{ post.category_br.name }}</small>
         </a>
         <small class="text-muted">{{ post.created_at.strftime('%d.%m.%Y') }}</small>
@@ -77,13 +82,12 @@
   </article>
 {% endmacro %}
 
-
 {% macro render_liked_post_item(post) %}
   <article class="media article-section base-article-property">
     <div class="media-body">
       <div class="article-metadata">
-        <a class="author-name fw-bold separator" href="{{url_for('blog_bp_in.user_posts', user_id=post.user_br.id)}}">{{ post.user_br.username }}</a>
-        <a class="separator" href="{{url_for('blog_bp_in.posts_by_category', category_id=post.category_br.id)}}">
+        <a class="author-name fw-bold separator" href="{{url_for('blog_bp_in.user_posts', id=post.user_br.id)}}">{{ post.user_br.username }}</a>
+        <a class="separator" href="{{url_for('blog_bp_in.posts_by_category', id=post.category_br.id)}}">
           <small class="link-dark">#{{ post.category_br.name }}</small>
         </a>
         <small class="text-muted">{{ post.created_at.strftime('%d.%m.%Y') }}</small>
@@ -98,12 +102,23 @@
   </article>
 {% endmacro %}
 
+{% macro render_sorting_menu() %}
+  <div class="dropdown block-margin">
+    <button class="btn btn-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+      Порядок сортування публікацій:
+    </button>
+    <ul class="dropdown-menu">
+      <li><a class="dropdown-item" type="button" href="{{url_for(request.url_rule.endpoint, sort_by='best')}}">Найкращі</a></li>
+      <li><a class="dropdown-item" type="button" href="{{url_for(request.url_rule.endpoint, sort_by='newest')}}">Дата додавання (спочатку новіші)</a></li>
+      <li><a class="dropdown-item" type="button" href="{{url_for(request.url_rule.endpoint, sort_by='oldest')}}">Дата додавання (спочатку старіші)</a></li>
+    </ul>
+  </div>
+{% endmacro %}
 
 {% macro pagination_block(posts, sort_by) %}
   <ul class="pagination">
-
      {% if posts.has_prev %}
-        <li class="page-item" aria-current="page"><a class="page-link" href="{{ url_for(request.url_rule.endpoint, page=posts.page-1, sort_by=sort_by) }}"><i class="bi bi-arrow-left-short"></i>Назад</a></li>
+        <li class="page-item" aria-current="page"><a class="page-link" href="{{ url_for(request.url_rule.endpoint, sort_by=sort_by, page=posts.page-1) }}"><i class="bi bi-arrow-left-short"></i>Назад</a></li>
      {% else %}
         <li class="page-item disabled" aria-current="page"><a class="page-link"><i class="bi bi-arrow-left-short"></i>Назад</a></li>
      {% endif %}
@@ -111,9 +126,9 @@
      {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=3) %}
         {% if page_num %}
           {% if posts.page == page_num %}
-              <li class="page-item active" aria-current="page"><a class="page-link" href="{{ url_for(request.url_rule.endpoint, page=page_num, sort_by=sort_by) }}">{{ page_num }}</a></li>
+              <li class="page-item active" aria-current="page"><a class="page-link" href="{{ url_for(request.url_rule.endpoint, sort_by=sort_by, page=page_num) }}">{{ page_num }}</a></li>
           {% else %}
-              <li class="page-item"><a class="page-link" href="{{ url_for(request.url_rule.endpoint, page=page_num, sort_by=sort_by) }}">{{ page_num }}</a></li>
+              <li class="page-item"><a class="page-link" href="{{ url_for(request.url_rule.endpoint, sort_by=sort_by, page=page_num) }}">{{ page_num }}</a></li>
           {% endif %}
         {% else %}
            <li class="page-item disabled"> <a class="page-link"> ... </a></li>
@@ -121,12 +136,51 @@
      {% endfor %}
 
      {% if posts.has_next %}
-        <li class="page-item" aria-current="page"><a class="page-link" href="{{ url_for(request.url_rule.endpoint, page=posts.page+1, sort_by=sort_by) }}">Вперед<i class="bi bi-arrow-right-short"></i></a></li>
+        <li class="page-item" aria-current="page"><a class="page-link" href="{{ url_for(request.url_rule.endpoint, sort_by=sort_by, page=posts.page+1) }}">Вперед<i class="bi bi-arrow-right-short"></i></a></li>
      {% else %}
-         <li class="page-item disabled" aria-current="page"><a class="page-link">Вперед<i class="bi bi-arrow-right-short"></i></a></li>
+        <li class="page-item disabled" aria-current="page"><a class="page-link">Вперед<i class="bi bi-arrow-right-short"></i></a></li>
      {% endif %}
   </ul>
 {% endmacro %}
 
 
+{% macro render_sorting_menu_id(id) %}
+  <div class="dropdown block-margin">
+    <button class="btn btn-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+      Порядок сортування публікацій:
+    </button>
+    <ul class="dropdown-menu">
+      <li><a class="dropdown-item" type="button" href="{{url_for(request.url_rule.endpoint, id=id, sort_by='best')}}">Найкращі</a></li>
+      <li><a class="dropdown-item" type="button" href="{{url_for(request.url_rule.endpoint, id=id, sort_by='newest')}}">Дата додавання (спочатку новіші)</a></li>
+      <li><a class="dropdown-item" type="button" href="{{url_for(request.url_rule.endpoint, id=id, sort_by='oldest')}}">Дата додавання (спочатку старіші)</a></li>
+    </ul>
+  </div>
+{% endmacro %}
 
+{% macro pagination_block_id(id, posts, sort_by) %}
+  <ul class="pagination">
+     {% if posts.has_prev %}
+        <li class="page-item" aria-current="page"><a class="page-link" href="{{ url_for(request.url_rule.endpoint, id=id, sort_by=sort_by, page=posts.page-1) }}"><i class="bi bi-arrow-left-short"></i>Назад</a></li>
+     {% else %}
+        <li class="page-item disabled" aria-current="page"><a class="page-link"><i class="bi bi-arrow-left-short"></i>Назад</a></li>
+     {% endif %}
+
+     {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=3) %}
+        {% if page_num %}
+          {% if posts.page == page_num %}
+              <li class="page-item active" aria-current="page"><a class="page-link" href="{{ url_for(request.url_rule.endpoint, id=id, sort_by=sort_by, page=page_num) }}">{{ page_num }}</a></li>
+          {% else %}
+              <li class="page-item"><a class="page-link" href="{{ url_for(request.url_rule.endpoint, id=id, sort_by=sort_by, page=page_num) }}">{{ page_num }}</a></li>
+          {% endif %}
+        {% else %}
+           <li class="page-item disabled"> <a class="page-link"> ... </a></li>
+        {% endif %}
+     {% endfor %}
+
+     {% if posts.has_next %}
+        <li class="page-item" aria-current="page"><a class="page-link" href="{{ url_for(request.url_rule.endpoint, id=id, sort_by=sort_by, page=posts.page+1) }}">Вперед<i class="bi bi-arrow-right-short"></i></a></li>
+     {% else %}
+        <li class="page-item disabled" aria-current="page"><a class="page-link">Вперед<i class="bi bi-arrow-right-short"></i></a></li>
+     {% endif %}
+  </ul>
+{% endmacro %}

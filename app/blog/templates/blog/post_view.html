@@ -27,8 +27,8 @@
     </div>
     <div class="card-footer light-silver-bg">
       <img src="{{url_for('static',filename='profile_pictures/' + post.user_br.picture)}}" class="rounded-circle post-author-img" alt="author-image">
-      <a class="post-author-name" href="{{url_for('blog_bp_in.user_posts', user_id=post.user_br.id)}}"> <b>{{post.user_br.username}}</b></a>&nbsp;&nbsp;
-      <a href="#" class="link-dark">#{{ post.category_br.name }}</a>
+      <a class="post-author-name" href="{{url_for('blog_bp_in.user_posts', id=post.user_br.id)}}"> <b>{{post.user_br.username}}</b></a>&nbsp;&nbsp;
+      <a href="{{url_for('blog_bp_in.posts_by_category', id=post.category_br.id)}}" class="link-dark">#{{ post.category_br.name }}</a>
     </div>
   </div>
 

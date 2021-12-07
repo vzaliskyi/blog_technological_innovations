@@ -5,6 +5,7 @@ from .models import Category, Post, Like, Comment
 from app.user.models import User
 from flask import redirect, url_for, flash, request, render_template, abort
 from flask_login import current_user, login_required
+from app.utils import handle_posts_view
 
 
 @blog_bp.route('/post/create', methods=['GET', 'POST'])
@@ -171,19 +172,27 @@ def rate_action(post_id, action):
     return redirect(url_for('blog_bp_in.post_view', post_id=post_id))
 
 
-@blog_bp.route('/user_posts/<int:user_id>')
-def user_posts(user_id):
-    user = User.query.get_or_404(user_id)
-    posts = Post.query.filter_by(user_id=user_id)
-    return render_template('user_posts.html', posts=posts, user=user)
+@blog_bp.route('/user_posts/<int:id>')
+def user_posts(id):
+    user = User.query.get_or_404(id)
+    posts, sort_by = handle_posts_view(Post.query.filter_by(user_id=id),
+                                       request.args)
+    return render_template('user_posts.html', posts=posts, sort_by=sort_by,
+                           user=user)
 
 
-@blog_bp.route('/category/<int:category_id>')
-def posts_by_category(category_id):
-    category = Category.query.get_or_404(category_id)
-    posts = Post.query.filter_by(category_id=category_id)
+@blog_bp.route('/category/<int:id>')
+def posts_by_category(id):
+    print("posts_by_category")
+    print(id)
+    category = Category.query.get_or_404(id)
+    posts, sort_by = handle_posts_view(
+        Post.query.filter_by(category_id=id),
+        request.args
+    )
+    print("sort_by==", sort_by)
     return render_template('posts_by_category.html', posts=posts,
-                           category=category)
+                           sort_by=sort_by)
 
 
 @blog_bp.route('/search')

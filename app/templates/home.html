@@ -1,17 +1,16 @@
 {% extends "base.html" %}
 {% block main %}
+  {% from "_render_field.html" import render_post_item, pagination_block, render_sorting_menu %}
   <div style="margin:auto;width:60%">
-    <div class="dropdown block-margin">
-      <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
-        Порядок сортування публікацій:
-      </button>
-      <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-        <li><a class="dropdown-item" type="button" href="{{url_for(request.url_rule.endpoint, sort_by='best')}}">Найкращі</a></li>
-        <li><a class="dropdown-item" type="button" href="{{url_for(request.url_rule.endpoint, sort_by='newest')}}">Дата додавання (спочатку новіші)</a></li>
-        <li><a class="dropdown-item" type="button" href="{{url_for(request.url_rule.endpoint, sort_by='oldest')}}">Дата додавання (спочатку старіші)</a></li>
-      </ul>
-    </div>
-    {% include "posts_list.html" %}
+
+    {{ render_sorting_menu() }}
+
+    {% for post in posts.items %}
+       {{ render_post_item(post) }}
+    {% endfor %}
+
+    {{ pagination_block(posts, sort_by) }}
+
   </div>
 {% endblock main %}
 
