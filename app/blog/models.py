@@ -3,6 +3,7 @@ from app import db, search
 from datetime import datetime
 # from flask_sqlalchemy import hybrid_property
 from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
+from sqlalchemy import select, func, and_
 
 
 class Category(db.Model):  # type: ignore
@@ -44,35 +45,37 @@ class Post(db.Model):  # type: ignore
     def total_comments(self):
         return Comment.query.filter(Comment.post_id == self.id).count()
 
+    @hybrid_property
     def total_likes(self):
         return Like.query.filter(
             Like.post_id == self.id,
             Like.status == True).count()
 
+    @total_likes.expression
+    def total_likes(cls):
+        return select([func.count(Like.status)]).where(
+            and_(Like.post_id == cls.id, Like.status == True)).label(
+            'total_likes')
+
+    @hybrid_property
     def total_dislikes(self):
         return Like.query.filter(
             Like.post_id == self.id,
             Like.status == False).count()
 
+    @total_dislikes.expression
+    def total_dislikes(cls):
+        return select([func.count(Like.status)]).where(
+            and_(Like.post_id == cls.id, Like.status == False)).label(
+            'total_dislikes')
+
     def get_like_percentage(self):
-        num_of_rates = self.total_likes() + self.total_dislikes()
+        num_of_rates = self.total_likes + self.total_dislikes
         # print('get_like_percentage')
         if num_of_rates == 0:
             return 50
         else:
-            return int(self.total_likes() / num_of_rates * 100)
-
-    # @hybrid_property
-    # def rate_difference(self):
-    #     total_l = Like.query.filter(
-    #         Like.post_id == self.id,
-    #         Like.status == True).count()
-    #     total_d = Like.query.filter(
-    #         Like.post_id == self.id,
-    #         Like.status == False).count()
-    #
-    #     num_of_rates = total_l + total_d
-    #     return num_of_rates
+            return int(self.total_likes / num_of_rates * 100)
 
     def __repr__(self):
         return f'<Post {self.id} {self.title} >'

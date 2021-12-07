@@ -67,8 +67,8 @@
         </a>
         <small class="text-muted">{{ post.created_at.strftime('%d.%m.%Y') }}</small>
         <div class="align-right">
-          <small class="text-muted"><i class="bi bi-hand-thumbs-up"></i>{{post.total_likes()}}</small>
-          <small class="text-muted"><i class="bi bi-hand-thumbs-down"></i>{{post.total_dislikes()}}</small>
+          <small class="text-muted"><i class="bi bi-hand-thumbs-up"></i>{{post.total_likes}}</small>
+          <small class="text-muted"><i class="bi bi-hand-thumbs-down"></i>{{post.total_dislikes}}</small>
           <small class="text-muted"><i class="bi bi-chat-right-dots"></i> {{post.total_comments()}}</small>
         </div>
       </div>
@@ -88,8 +88,8 @@
         </a>
         <small class="text-muted">{{ post.created_at.strftime('%d.%m.%Y') }}</small>
         <div class="align-right">
-          <small class="text-muted"><i class="bi bi-hand-thumbs-up-fill"></i>{{post.total_likes()}}</small>
-          <small class="text-muted"><i class="bi bi-hand-thumbs-down"></i>{{post.total_dislikes()}}</small>
+          <small class="text-muted"><i class="bi bi-hand-thumbs-up-fill"></i>{{post.total_likes}}</small>
+          <small class="text-muted"><i class="bi bi-hand-thumbs-down"></i>{{post.total_dislikes}}</small>
           <small class="text-muted"><i class="bi bi-chat-right-dots"></i> {{post.total_comments()}}</small>
         </div>
       </div>
@@ -99,10 +99,11 @@
 {% endmacro %}
 
 
-{% macro pagination_block(posts) %}
+{% macro pagination_block(posts, sort_by) %}
   <ul class="pagination">
+
      {% if posts.has_prev %}
-        <li class="page-item" aria-current="page"><a class="page-link" href="{{ url_for('home', page=posts.page-1) }}"><i class="bi bi-arrow-left-short"></i>Назад</a></li>
+        <li class="page-item" aria-current="page"><a class="page-link" href="{{ url_for(request.url_rule.endpoint, page=posts.page-1, sort_by=sort_by) }}"><i class="bi bi-arrow-left-short"></i>Назад</a></li>
      {% else %}
         <li class="page-item disabled" aria-current="page"><a class="page-link"><i class="bi bi-arrow-left-short"></i>Назад</a></li>
      {% endif %}
@@ -110,18 +111,22 @@
      {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=3) %}
         {% if page_num %}
           {% if posts.page == page_num %}
-              <li class="page-item active" aria-current="page"><a class="page-link" href="{{ url_for('home', page=page_num) }}">{{ page_num }}</a></li>
+              <li class="page-item active" aria-current="page"><a class="page-link" href="{{ url_for(request.url_rule.endpoint, page=page_num, sort_by=sort_by) }}">{{ page_num }}</a></li>
           {% else %}
-              <li class="page-item"><a class="page-link" href="{{ url_for('home', page=page_num) }}">{{ page_num }}</a></li>
+              <li class="page-item"><a class="page-link" href="{{ url_for(request.url_rule.endpoint, page=page_num, sort_by=sort_by) }}">{{ page_num }}</a></li>
           {% endif %}
         {% else %}
            <li class="page-item disabled"> <a class="page-link"> ... </a></li>
         {% endif %}
      {% endfor %}
-      {% if posts.has_next %}
-        <li class="page-item" aria-current="page"><a class="page-link" href="{{ url_for('home', page=posts.page+1) }}">Вперед<i class="bi bi-arrow-right-short"></i></a></li>
+
+     {% if posts.has_next %}
+        <li class="page-item" aria-current="page"><a class="page-link" href="{{ url_for(request.url_rule.endpoint, page=posts.page+1, sort_by=sort_by) }}">Вперед<i class="bi bi-arrow-right-short"></i></a></li>
      {% else %}
          <li class="page-item disabled" aria-current="page"><a class="page-link">Вперед<i class="bi bi-arrow-right-short"></i></a></li>
      {% endif %}
   </ul>
 {% endmacro %}
+
+
+

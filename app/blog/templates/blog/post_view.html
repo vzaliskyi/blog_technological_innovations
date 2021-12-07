@@ -12,8 +12,8 @@
       {% endif %}
       <h3 class="text-center mb-0">{{post.title}}</h3>
         <div class="align-left">
-          <a href="{{ url_for('blog_bp_in.rate_action', post_id=post.id, action='like') }}" id='like-btn' class="bi" data-toggle="tooltip">{{post.total_likes()}}</a>
-          <a href="{{ url_for('blog_bp_in.rate_action', post_id=post.id, action='dislike') }}" id='dislike-btn' class="bi" data-toggle="tooltip">{{post.total_dislikes()}}</a>
+          <a href="{{ url_for('blog_bp_in.rate_action', post_id=post.id, action='like') }}" id='like-btn' class="bi" data-toggle="tooltip">{{post.total_likes}}</a>
+          <a href="{{ url_for('blog_bp_in.rate_action', post_id=post.id, action='dislike') }}" id='dislike-btn' class="bi" data-toggle="tooltip">{{post.total_dislikes}}</a>
           <div class="progress" style="height: 2px;">
             <div id='likes-percentage' class="progress-bar" role="progressbar" style="background-color:#212529;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
           </div>
