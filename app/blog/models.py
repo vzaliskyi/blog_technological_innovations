@@ -1,4 +1,3 @@
-# type: ignore[no-redef]
 from app import db, search
 # from app.user.models import User
 from datetime import datetime
@@ -53,7 +52,7 @@ class Post(db.Model):  # type: ignore
             Like.status == True).count()
 
     @total_likes.expression
-    def total_likes(cls):
+    def total_likes(cls):  # type: ignore[no-redef]
         return select([func.count(Like.status)]).where(
             and_(Like.post_id == cls.id, Like.status == True)).label(
             # type: ignore
@@ -66,7 +65,7 @@ class Post(db.Model):  # type: ignore
             Like.status == False).count()
 
     @total_dislikes.expression
-    def total_dislikes(cls):
+    def total_dislikes(cls):  # type: ignore[no-redef]
         return select([func.count(Like.status)]).where(
             and_(Like.post_id == cls.id, Like.status == False)).label(
             'total_dislikes')
