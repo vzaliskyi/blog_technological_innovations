@@ -1,4 +1,3 @@
-# type: ignore
 from app import db, search
 # from app.user.models import User
 from datetime import datetime
@@ -34,7 +33,6 @@ class Post(db.Model):  # type: ignore
     comments = db.relationship('Comment', backref='post_br', lazy=True)
     # type: ignore
     likes = db.relationship('Like', backref='post_br', lazy=True)
-
     # type: ignore
 
     def total_posts_by_category(self, category_id):
@@ -49,15 +47,16 @@ class Post(db.Model):  # type: ignore
 
     @hybrid_property
     def total_likes(self):  # type: ignore
-        return Like.query.filter(
-            Like.post_id == self.id,
-            Like.status == True).count()
+        return Like.query.filter(  # type: ignore
+            Like.post_id == self.id,  # type: ignore
+            Like.status == True).count()  # type: ignore
 
     @total_likes.expression
     def total_likes(cls):  # type: ignore
-        return select([func.count(Like.status)]).where(
+        return select([func.count(Like.status)]).where(  # type: ignore
             and_(Like.post_id == cls.id, Like.status == True)).label(
-            'total_likes')
+            # type: ignore
+            'total_likes')  # type: ignore
 
     @hybrid_property
     def total_dislikes(self):  # type: ignore
