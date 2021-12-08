@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block main %}
+  {% from "_render_field.html" import render_post_item, pagination_block_search, render_sorting_menu_search %}
+  <div style="margin:auto;width:60%">
+
+    {{ render_sorting_menu_search(query) }}
+
+    {% for post in posts.items %}
+       {{ render_post_item(post) }}
+    {% endfor %}
+    {{ pagination_block_search(query, posts, sort_by) }}
+  </div>
+{% endblock main %}
+
