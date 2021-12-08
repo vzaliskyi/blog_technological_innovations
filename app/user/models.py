@@ -117,7 +117,7 @@ class User(db.Model, UserMixin):  # type: ignore
         for post in posts:
             result['likes'] = result['likes'] + post.total_likes
             result['dislikes'] = result['dislikes'] + post.total_dislikes
-            result['comments'] = result['comments'] + post.total_comments()
+            result['comments'] = result['comments'] + post.total_comments
         return result
 
     def get_liked_posts(self):

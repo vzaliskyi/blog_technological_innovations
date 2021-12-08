@@ -34,7 +34,7 @@
 
 <!-- post comments -->
   <div id="comment-section" class="form-control" style="background-color: #f8f8ff;">
-    <h5 class="p-1" align="center">Коментарі<span class="badge badge-style rounded-pill">{{post.total_comments()}}</span></h5>
+    <h5 class="p-1" align="center">Коментарі<span class="badge badge-style rounded-pill">{{post.total_comments}}</span></h5>
 
     {% if current_user.is_authenticated %}
       <form method="post" action="{{ url_for('blog_bp_in.post_view', post_id=post.id, next=request.args.get('next')) }}" enctype="multipart/form-data" class="pt-1 pb-2" align="center">

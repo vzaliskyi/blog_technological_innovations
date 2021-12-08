@@ -102,7 +102,7 @@ def account():
 
     return render_template('account.html', posts=posts,  sort_by=sort_by,
                            liked_posts=current_user.get_liked_posts(),
-                           comments=comments,)
+                           comments=comments)
 
 
 @user_bp.route("/account/update", methods=['GET', 'POST'])

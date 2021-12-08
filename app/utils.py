@@ -22,6 +22,6 @@ def handle_posts_view(posts, request_args):
     sort_by = request_args.get('sort_by', 'newest', type=str)
 
     posts = sort_posts(posts, sort_by)
-    posts = posts.paginate(page=page, per_page=1)
+    posts = posts.paginate(page=page, per_page=5)
 
     return posts, sort_by

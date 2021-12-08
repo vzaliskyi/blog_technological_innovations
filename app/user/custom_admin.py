@@ -101,13 +101,15 @@ class PostModelView(ModelView):
     column_searchable_list = ('title',)
     column_sortable_list = ('title', 'created_at')
     column_list = ('category_br.name', 'user_br.username', 'title', 'content',
-                   'created_at')
+                   'created_at', 'total_likes', 'total_dislikes', 'total_comments')
     column_labels = {
         'category_br.name': 'Категорія',
         'user_br.username': 'Користувач',
         'title': 'Заголовок',
         'content': 'Опис',
         'created_at': 'Дата створення',
+        'total_likes': 'Кількість лайків',
+        'total_dislikes': 'Кількість дизлайків',
     }
     form_edit_rules = (
         'category_br', 'user_br', 'title', 'content', 'created_at'
@@ -142,7 +144,7 @@ class PostModelView(ModelView):
 
 class LikeModelView(ModelView):
     column_list = ('user_br.username', 'post_br.title', 'status')
-    column_sortable_list = ()
+    column_sortable_list = ('user_br.username', 'post_br.title')
     column_labels = {
         'user_br.username': 'Користувач',
         'post_br.title': 'Пост',
@@ -166,7 +168,7 @@ class LikeModelView(ModelView):
 
 class CommentModelView(ModelView):
     column_list = ('user_br.username', 'post_br.title', 'text', 'created_at')
-    column_sortable_list = ('created_at',)
+    column_sortable_list = ('user_br.username', 'post_br.title','created_at',)
     column_labels = {
         'user_br.username': 'Користувач',
         'post_br.title': 'Пост',

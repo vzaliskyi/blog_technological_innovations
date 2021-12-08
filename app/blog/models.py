@@ -1,3 +1,4 @@
+# type: ignore
 from app import db, search
 # from app.user.models import User
 from datetime import datetime
@@ -42,6 +43,7 @@ class Post(db.Model):  # type: ignore
     def total_posts_by_user(self, user_id):
         return Post.query.filter(Post.user_id == user_id).count()
 
+    @hybrid_property
     def total_comments(self):
         return Comment.query.filter(Comment.post_id == self.id).count()
 
