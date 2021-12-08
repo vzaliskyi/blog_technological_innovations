@@ -8,9 +8,7 @@
     {% for post in posts.items %}
        {{ render_post_item(post) }}
     {% endfor %}
-
     {{ pagination_block(posts, sort_by) }}
-
   </div>
 {% endblock main %}
 

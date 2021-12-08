@@ -208,6 +208,9 @@ def search():
         Post.title.ilike(f'%{user_query}%')
     )
     posts = result_by_keywords.union(result_by_substring)
-
-    return render_template('home.html', title='SearchResults',
-                           posts=posts)
+    posts, sort_by = handle_posts_view(
+        posts,
+        request.args
+    )
+    return render_template('search_results.html', title='SearchResults',
+                           posts=posts, sort_by=sort_by, query=user_query)
