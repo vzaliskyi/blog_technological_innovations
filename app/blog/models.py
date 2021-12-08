@@ -51,7 +51,7 @@ class Post(db.Model):  # type: ignore
             Like.post_id == self.id,
             Like.status == True).count()
 
-    @total_likes.expression# type: ignore[no-redef]
+    @total_likes.expression  # type: ignore[no-redef]
     def total_likes(cls):  # type: ignore[no-redef]
         return select([func.count(Like.status)]).where(
             and_(Like.post_id == cls.id, Like.status == True)).label(
