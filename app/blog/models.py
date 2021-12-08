@@ -45,7 +45,7 @@ class Post(db.Model):  # type: ignore
     def total_comments(self):
         return Comment.query.filter(Comment.post_id == self.id).count()
 
-    # mypy: begin ignore
+    # type: begin ignore
     @hybrid_property
     def total_likes(self):
         return Like.query.filter(
