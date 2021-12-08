@@ -100,7 +100,7 @@ def account():
                Post.user_id == current_user.id). \
         order_by(Comment.created_at.desc())
 
-    return render_template('account.html', posts=posts,  sort_by=sort_by,
+    return render_template('account.html', posts=posts, sort_by=sort_by,
                            liked_posts=current_user.get_liked_posts(),
                            comments=comments)
 
