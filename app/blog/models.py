@@ -45,18 +45,19 @@ class Post(db.Model):  # type: ignore
     def total_comments(self):
         return Comment.query.filter(Comment.post_id == self.id).count()
 
+    # mypy: begin ignore
     @hybrid_property
-    def total_likes(self):  # type: ignore
-        return Like.query.filter(  # type: ignore
-            Like.post_id == self.id,  # type: ignore
-            Like.status == True).count()  # type: ignore
+    def total_likes(self):
+        return Like.query.filter(
+            Like.post_id == self.id,
+            Like.status == True).count()
 
     @total_likes.expression
-    def total_likes(cls):  # type: ignore
-        return select([func.count(Like.status)]).where(  # type: ignore
+    def total_likes(cls):
+        return select([func.count(Like.status)]).where(
             and_(Like.post_id == cls.id, Like.status == True)).label(
             # type: ignore
-            'total_likes')  # type: ignore
+            'total_likes')
 
     @hybrid_property
     def total_dislikes(self):  # type: ignore
@@ -69,6 +70,7 @@ class Post(db.Model):  # type: ignore
         return select([func.count(Like.status)]).where(
             and_(Like.post_id == cls.id, Like.status == False)).label(
             'total_dislikes')
+    # mypy: end ignore
 
     def get_like_percentage(self):
         num_of_rates = self.total_likes + self.total_dislikes
