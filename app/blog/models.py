@@ -60,13 +60,13 @@ class Post(db.Model):  # type: ignore
             'total_likes')
 
     @hybrid_property
-    def total_dislikes(self):  # type: ignore
+    def total_dislikes(self):
         return Like.query.filter(
             Like.post_id == self.id,
             Like.status == False).count()
 
     @total_dislikes.expression
-    def total_dislikes(cls):  # type: ignore
+    def total_dislikes(cls):
         return select([func.count(Like.status)]).where(
             and_(Like.post_id == cls.id, Like.status == False)).label(
             'total_dislikes')
