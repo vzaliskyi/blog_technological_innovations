@@ -10,6 +10,7 @@ from . import user_bp
 from .models import User
 from .forms import LoginForm, RegistrationForm, AccountUpdateForm,\
     PasswordUpdateForm, ResetPasswordForm, RequestPasswordResetForm
+from app.utils import handle_posts_view
 
 
 def save_picture(form_picture):
@@ -87,8 +88,10 @@ def logout():
 @user_bp.route("/account")
 @login_required
 def account():
-    posts = Post.query.filter_by(user_id=current_user.id). \
-        order_by(Post.created_at.desc())
+    posts = Post.query.filter_by(user_id=current_user.id)
+    posts, sort_by = handle_posts_view(posts,
+                                       request.args)
+
     # коментарі до постів ПОТОЧНОНО користувача і НЕ написані поточним
     # користувачем
     comments = db.session.query(Comment).join(Post). \
@@ -97,9 +100,9 @@ def account():
                Post.user_id == current_user.id). \
         order_by(Comment.created_at.desc())
 
-    return render_template('account.html', posts=posts,
+    return render_template('account.html', posts=posts,  sort_by=sort_by,
                            liked_posts=current_user.get_liked_posts(),
-                           comments=comments)
+                           comments=comments,)
 
 
 @user_bp.route("/account/update", methods=['GET', 'POST'])
