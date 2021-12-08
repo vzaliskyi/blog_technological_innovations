@@ -1,7 +1,16 @@
 {% extends "base.html" %}
 {% block main %}
+  {% from "_render_field.html" import render_post_item, pagination_block, render_sorting_menu %}
   <div style="margin:auto;width:60%">
-    {% include "posts_list.html" %}
+
+    {{ render_sorting_menu() }}
+
+    {% for post in posts.items %}
+       {{ render_post_item(post) }}
+    {% endfor %}
+
+    {{ pagination_block(posts, sort_by) }}
+
   </div>
 {% endblock main %}
 

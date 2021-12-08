@@ -1,24 +1,22 @@
 {% extends "base.html" %}
 {% block main %}
-  {% from "_render_field.html" import render_field_lr %}
+  {% from "_render_field.html" import render_post_item, pagination_block_id, render_sorting_menu_id  %}
 
   <div class="card p-2" style="margin:auto;width:60%">
-    <div align="center">
-      <legend class="border-bottom mb-4">Категорія
-        <b class="text-uppercase">{{category.name}}
-          {% if posts.first() %}
-            ({{posts.first().total_posts_by_category(category.id)}})
+      <legend class="border-bottom mb-4" align="center">Категорія
+        <b class="text-uppercase">{{posts.items[0].category_br.name}}
+          {% if posts.items[0] %}
+            ({{posts.items[0].total_posts_by_category(posts.items[0].category_br.id)}})
           {% endif %}
         </b>
       </legend>
-    </div>
-      {% if posts.first() %}
-        {% include "posts_list.html" %}
-      {% else %}
-        <div class="alert alert-info" role="alert" align="center">
-          Публікацій за цією категорією не знайдено
-        </div>
-      {% endif %}
+
+
+      {{ render_sorting_menu_id(posts.items[0].category_br.id) }}
+        {% for post in posts.items %}
+           {{ render_post_item(post) }}
+        {% endfor %}
+      {{ pagination_block_id(posts.items[0].category_br.id, posts, sort_by) }}
   </div>
 
 {% endblock main %}

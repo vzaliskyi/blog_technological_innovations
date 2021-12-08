@@ -1,32 +1,32 @@
 {% extends "base.html" %}
 {% block main %}
-  {% from "_render_field.html" import render_liked_post_item, render_post_item_account %}
+  {% from "_render_field.html" import render_liked_post_item, render_post_item_account, pagination_block, render_sorting_menu %}
   <div id="profile-main" class="row blogger-profile-section">
     <div id="profile-info" class="card col-5">
       <div class="p-2">
         <legend class="border-bottom text-center text-title p-1">Інформація про мене</legend>
         <div align="right"><a href="{{url_for('user_bp_in.account_update')}}" role="button" class="btn btn-outline-secondary btn-sm bi bi-pencil-square m-0" id="edit-button"> Редагувати дані</a></div>
-        <div align="center">
-          <img src="{{url_for('static',filename='profile_pictures/' + current_user.picture)}}" class="rounded-circle profile-img" alt="profile-image">
+          <div align="center">
+            <img src="{{url_for('static',filename='profile_pictures/' + current_user.picture)}}" class="rounded-circle profile-img" alt="profile-image">
 
-          <div class="card-body">
-            <h5 class="card-title">{{ current_user.username }}</h5>
-            <mark><em class="card-title text-muted">{{ current_user.email }}</em></mark>
-            {% if posts.first() %}
+            <div class="card-body">
+              <h5 class="card-title">{{ current_user.username }}</h5>
+              <mark><em class="card-title text-muted">{{ current_user.email }}</em></mark>
+              {% if posts.items[0] %}
+                <hr>
+                <div class="mt-3 h5">
+                  <small class="text-muted">Загальна статистика моїх публікацій:</small>
+                  <p>
+                    <small class="text-muted"><i class="bi bi-card-heading" title="Загальна кількість публікацій"></i> {{current_user.get_statistic()['posts_num'] }}</small>
+                    <small class="text-muted"><i class="bi bi-hand-thumbs-up" title="Кількість лайків"></i> {{ current_user.get_statistic()['likes'] }}</small>
+                    <small class="text-muted"><i class="bi bi-hand-thumbs-down" title="Кількість дизлайків"></i> {{ current_user.get_statistic()['dislikes'] }}</small>
+                    <small class="text-muted"><i class="bi bi-chat-right-dots" title="Кількість коментарів"></i> {{ current_user.get_statistic()['comments'] }}</small>
+                  </p>
+                </div>
+              {% endif %}
               <hr>
-              <div class="mt-3 h5">
-                <small class="text-muted">Загальна статистика моїх публікацій:</small>
-                <p>
-                  <small class="text-muted"><i class="bi bi-card-heading" title="Загальна кількість публікацій"></i> {{current_user.get_statistic()['posts_num'] }}</small>
-                  <small class="text-muted"><i class="bi bi-hand-thumbs-up" title="Кількість лайків"></i> {{ current_user.get_statistic()['likes'] }}</small>
-                  <small class="text-muted"><i class="bi bi-hand-thumbs-down" title="Кількість дизлайків"></i> {{ current_user.get_statistic()['dislikes'] }}</small>
-                  <small class="text-muted"><i class="bi bi-chat-right-dots" title="Кількість коментарів"></i> {{ current_user.get_statistic()['comments'] }}</small>
-                </p>
-              </div>
-            {% endif %}
-            <hr>
-            <div align="center"><a id="show-liked-link" class="bi bi-heart-fill m-0" data-bs-toggle="offcanvas" href="#offcanvasLikedPosts" role="button" aria-controls="offcanvasLikedPosts"> Переглянути вподобані мною публікації</a></div>
-          </div>
+              <div align="center"><a id="show-liked-link" class="bi bi-heart-fill m-0" data-bs-toggle="offcanvas" href="#offcanvasLikedPosts" role="button" aria-controls="offcanvasLikedPosts"> Переглянути вподобані мною публікації</a></div>
+            </div>
         </div>
       </div>
     </div>
@@ -39,9 +39,13 @@
       </nav>
       <div class="tab-content" id="nav-tabContent" style="overflow-y: scroll; overflow: auto;">
           <div class="tab-pane fade show active" id="nav-my-posts" role="tabpanel" aria-labelledby="nav-my-posts">
-              {% for post in posts %}
-                {{ render_post_item_account(post) }}
-              {% endfor %}
+            {{ render_sorting_menu() }}
+
+            {% for post in posts.items %}
+               {{ render_post_item_account(post) }}
+            {% endfor %}
+
+            {{ pagination_block(posts, sort_by) }}
           </div>
           <div class="tab-pane fade comment-account" id="nav-new-comments" role="tabpanel" aria-labelledby="nav-new-comments">
              {% if comments.first() %}
@@ -90,10 +94,10 @@
 
 <script>
  $(document).ready(function(){
-    {% if not posts.first() %}
+    {% if not posts.items[0] %}
+      $("#posts-info").hide();
       $("#profile-main").addClass("profile-section");
       $("#profile-info").toggleClass("col-5");
-      $("#posts-info").hide();
     {% endif %}
  });
 

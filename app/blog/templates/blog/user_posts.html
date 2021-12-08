@@ -1,26 +1,25 @@
 {% extends "base.html" %}
 {% block main %}
-  {% from "_render_field.html" import render_field_lr %}
+  {% from "_render_field.html" import render_post_item, pagination_block_id, render_sorting_menu_id  %}
 
   <div class="card p-2" style="margin:auto;width:60%">
     <div align="center">
       <img src="{{url_for('static',filename='profile_pictures/' + user.picture)}}" class="rounded-circle author-img" alt="author-image">
-      <legend class="border-bottom mb-4">
-        <small>Публікації </small>
-        <b>{{user.username}}
-          {% if posts.first() %}
-            ({{posts.first().total_posts_by_user(user.id)}})
-          {% endif %}
-        </b>
+      <legend class="border-bottom mb-4"> <h3>{{user.username}}</h3>
+        <p>
+          <small class="text-muted"><i class="bi bi-card-heading" title="Загальна кількість публікацій"></i> {{user.get_statistic()['posts_num'] }}</small>
+          <small class="text-muted"><i class="bi bi-hand-thumbs-up" title="Кількість лайків"></i> {{ user.get_statistic()['likes'] }}</small>
+          <small class="text-muted"><i class="bi bi-hand-thumbs-down" title="Кількість дизлайків"></i> {{ user.get_statistic()['dislikes'] }}</small>
+          <small class="text-muted"><i class="bi bi-chat-right-dots" title="Кількість коментарів"></i> {{ user.get_statistic()['comments'] }}</small>
+        </p>
       </legend>
     </div>
-      {% if posts.first() %}
-        {% include "posts_list.html" %}
-      {% else %}
-        <div class="alert alert-info" role="alert" align="center">
-          Даний користувач не має жодної публікації
-        </div>
-      {% endif %}
+
+     {{ render_sorting_menu_id(posts.items[0].user_br.id) }}
+        {% for post in posts.items %}
+           {{ render_post_item(post) }}
+        {% endfor %}
+      {{ pagination_block_id(posts.items[0].user_br.id, posts, sort_by) }}
   </div>
 
 {% endblock main %}
