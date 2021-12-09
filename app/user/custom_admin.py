@@ -12,14 +12,10 @@ from ..blog.forms import check_text_length
 class MyHomeView(AdminIndexView):
     @expose('/')
     def index(self):
-        if not current_user.is_authenticated:
-            flash('Авторизуйтесь, щоб отримати доступ до адмін-сторінки',
+        if not (current_user.is_authenticated and current_user.admin):
+            flash('Немає доступу до цієї сторінки',
                   'danger')
             return redirect(url_for('user_bp_in.login'))
-        if not current_user.is_admin():
-            flash('Ви не маєте прав доступу до адміністративної області',
-                  'danger')
-            return redirect(url_for('home'))
         return self.render('admin/admin_home.html')
 
 
@@ -33,7 +29,7 @@ class UserModelView(ModelView):
         'admin': 'Є адміном',
     }
     form_edit_rules = (
-        'username', 'email', 'admin',
+        'username', 'email', 'picture', 'admin',
     )
     form_create_rules = (
         'username', 'email', 'password', 'admin'
@@ -64,6 +60,8 @@ class UserModelView(ModelView):
         return current_user.is_authenticated and current_user.admin
 
     def inaccessible_callback(self, name, *kwargs):
+        flash('Немає доступу до цієї сторінки',
+              'danger')
         return redirect(url_for('home'))
 
 
@@ -85,6 +83,8 @@ class CategoryModelView(ModelView):
         return current_user.is_authenticated and current_user.admin
 
     def inaccessible_callback(self, name, *kwargs):
+        flash('Немає доступу до цієї сторінки',
+              'danger')
         return redirect(url_for('home'))
 
 
@@ -99,7 +99,8 @@ class PostModelView(ModelView):
         'content': _content_formatter,
     }
     column_searchable_list = ('title',)
-    column_sortable_list = ('title', 'created_at')
+    column_sortable_list = ('title', 'created_at', 'user_br.username',
+                            'category_br.name')
     column_list = ('category_br.name', 'user_br.username', 'title', 'content',
                    'created_at', 'total_likes', 'total_dislikes',
                    'total_comments')
@@ -111,6 +112,7 @@ class PostModelView(ModelView):
         'created_at': 'Дата створення',
         'total_likes': 'Кількість лайків',
         'total_dislikes': 'Кількість дизлайків',
+        'total_comments': 'Кількість коментарів'
     }
     form_edit_rules = (
         'category_br', 'user_br', 'title', 'content', 'created_at'
@@ -140,6 +142,8 @@ class PostModelView(ModelView):
         return current_user.is_authenticated and current_user.admin
 
     def inaccessible_callback(self, name, *kwargs):
+        flash('Немає доступу до цієї сторінки',
+              'danger')
         return redirect(url_for('home'))
 
 
@@ -164,6 +168,8 @@ class LikeModelView(ModelView):
         return current_user.is_authenticated and current_user.admin
 
     def inaccessible_callback(self, name, *kwargs):
+        flash('Немає доступу до цієї сторінки',
+              'danger')
         return redirect(url_for('home'))
 
 
@@ -194,6 +200,8 @@ class CommentModelView(ModelView):
         return current_user.is_authenticated and current_user.admin
 
     def inaccessible_callback(self, name, *kwargs):
+        flash('Немає доступу до цієї сторінки',
+              'danger')
         return redirect(url_for('home'))
 
 
@@ -207,4 +215,6 @@ class CustomFileAdmin(FileAdmin):
         return current_user.is_authenticated and current_user.admin
 
     def inaccessible_callback(self, name, *kwargs):
+        flash('Немає доступу до цієї сторінки',
+              'danger')
         return redirect(url_for('home'))
