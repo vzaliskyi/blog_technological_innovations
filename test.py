@@ -17,6 +17,7 @@ class BaseTestCase(TestCase):
         return app
 
     def setUp(self):
+        db.drop_all()
         db.create_all()
         db.session.add_all([
             Category(name='Смартфони'),

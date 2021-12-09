@@ -7,6 +7,8 @@ from .forms import check_letters, check_digits, check_symbols, check_spaces
 from wtforms.validators import Length, DataRequired, Regexp, Email
 
 from ..blog.forms import check_text_length
+from app.blog.models import Post, Comment, Like
+from app import db
 
 
 class MyHomeView(AdminIndexView):
@@ -20,6 +22,34 @@ class MyHomeView(AdminIndexView):
 
 
 class UserModelView(ModelView):
+    def delete_model(self, model):
+        try:
+            posts = Post.query.filter_by(user_id=model.id)
+            if posts.first():
+                for post in posts:
+                    comments = Comment.query.filter_by(post_id=post.id)
+                    likes = Like.query.filter_by(post_id=post.id)
+                    if comments.first() or likes.first():
+                        for comment in comments:
+                            db.session.delete(comment)
+                        for like in likes:
+                            db.session.delete(like)
+                    db.session.delete(post)
+                self.session.delete(model)
+                self.session.commit()
+                return True
+            else:
+                self.session.delete(model)
+                self.session.commit()
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                pass
+            self.session.rollback()
+            return False
+        else:
+            self.after_model_delete(model)
+        return True
+
     column_searchable_list = ('username',)
     column_sortable_list = ('username',)
     column_list = ('username', 'email', 'picture', 'admin',)
@@ -89,12 +119,37 @@ class CategoryModelView(ModelView):
 
 
 class PostModelView(ModelView):
+    def delete_model(self, model):
+        try:
+            comments = Comment.query.filter_by(post_id=model.id)
+            likes = Like.query.filter_by(post_id=model.id)
+            if comments.first() or likes.first():
+                for comment in comments:
+                    db.session.delete(comment)
+                for like in likes:
+                    db.session.delete(like)
+                self.session.delete(model)
+                self.session.commit()
+                return True
+            else:
+                self.session.delete(model)
+                self.session.commit()
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                pass
+            self.session.rollback()
+            return False
+        else:
+            self.after_model_delete(model)
+        return True
+
     def _content_formatter(view, context, model, name):
         # Format your string here e.g show first 20 characters
         # can return any valid HTML e.g. a link to another view to
         # show the detail or a popup window
         return model.content[:250]
 
+    can_create = False
     column_formatters = {
         'content': _content_formatter,
     }
@@ -115,7 +170,7 @@ class PostModelView(ModelView):
         'total_comments': 'Кількість коментарів'
     }
     form_edit_rules = (
-        'category_br', 'user_br', 'title', 'content', 'created_at'
+        'category_br', 'user_br', 'title', 'content',
     )
     form_create_rules = (
         'category_br', 'user_br', 'title', 'content',
@@ -148,6 +203,8 @@ class PostModelView(ModelView):
 
 
 class LikeModelView(ModelView):
+    can_create = False
+    can_edit = False
     column_list = ('user_br.username', 'post_br.title', 'status')
     column_sortable_list = ('user_br.username', 'post_br.title')
     column_labels = {
@@ -160,8 +217,7 @@ class LikeModelView(ModelView):
             message="Це поле є обов'язковим")]),
         user_br=dict(label='Користувач', validators=[DataRequired(
             message="Це поле є обов'язковим")]),
-        status=dict(label='Статус(лайк/дизлайк)', validators=[DataRequired(
-            message="Це поле є обов'язковим")]),
+        status=dict(label='Статус(лайк/дизлайк)'),
     )
 
     def is_accessible(self):
@@ -174,6 +230,7 @@ class LikeModelView(ModelView):
 
 
 class CommentModelView(ModelView):
+    can_create = False
     column_list = ('user_br.username', 'post_br.title', 'text', 'created_at')
     column_sortable_list = ('user_br.username', 'post_br.title', 'created_at',)
     column_labels = {
