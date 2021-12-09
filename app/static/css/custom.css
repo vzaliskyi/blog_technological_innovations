@@ -320,3 +320,16 @@ a.post-created-at{
     background: #f5f5f5;
     color: #313638;
 }
+
+.media-block{
+    display: block;
+  -webkit-transition: 0.5s;
+      transition: 0.5s;
+}
+
+.media-block:hover{
+  background: #f8f9fa;
+  -webkit-transform: scale(1.05);
+          transform: scale(1.05);
+}
+
