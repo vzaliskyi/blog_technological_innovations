@@ -35,8 +35,8 @@ https://www.python.org/dev/peps/pep-0008
 ## Branching policy:
 Ми маємо основний репозиторій з однією віткою master. При виконанні завдань девелопери роблять fork головного репозиторію. Після виконання завдання виконується pull request, після чого відбувається merge з гілкою master.
 ## Setup:
-python3 -m venv env python -m venv env
-Unix Bash:  source env/bin/activate          
-Windows: env\Scripts\activate.bat          env\Scripts\deactivate.bat
-pip install -r requirements.txt
-flask run
+* python3 -m venv env python -m venv env
+* Unix Bash:  source env/bin/activate          
+* Windows: env\Scripts\activate.bat          env\Scripts\deactivate.bat
+* pip install -r requirements.txt
+* flask run
