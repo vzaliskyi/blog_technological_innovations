@@ -38,7 +38,7 @@ https://www.python.org/dev/peps/pep-0008
 ```
 python3 -m venv env python -m venv env
 Unix Bash:  source env/bin/activate          
-Windows: env\Scripts\activate.bat          env\Scripts\deactivate.bat
+Windows: env\Scripts\activate.bat
 pip install -r requirements.txt
 flask run
 ```
