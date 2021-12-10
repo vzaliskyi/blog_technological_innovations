@@ -1,6 +1,6 @@
 # Product overview
 
-**Project: website "TechBlog"** 
+**Project topic: website "TechBlog" (review of new tech devices) ** 
   
   Approximate description of the functionality:
 	The website is intended for users who want to be the first to learn about new tech devices: smartphones, laptops, tablets, etc.
