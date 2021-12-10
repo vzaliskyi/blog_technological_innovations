@@ -2,7 +2,7 @@ from app.user.models import Post
 
 
 def sort_posts(posts, sort_by):
-    print('sort_posts')
+    # print('sort_posts')
     if sort_by == 'best':
         print('best')
         return posts.order_by(
@@ -10,10 +10,10 @@ def sort_posts(posts, sort_by):
             Post.total_likes.desc()
         )
     elif sort_by == 'oldest':
-        print('oldest')
+        # print('oldest')
         return posts.order_by(Post.created_at.asc())
     else:
-        print('newest')
+        # print('newest')
         return posts.order_by(Post.created_at.desc())
 
 
