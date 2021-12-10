@@ -1,4 +1,5 @@
-import unittest, pytest
+import unittest
+import pytest
 from flask_testing import TestCase
 from app import db, create_app
 
