@@ -1,10 +1,13 @@
 import os
 import secrets
+from datetime import timedelta
+
 from PIL import Image
-from flask import render_template, redirect, url_for, flash, request
+from flask import render_template, redirect, url_for, flash, request, \
+    current_app, session
 from flask_login import login_user, current_user, logout_user, login_required
 from flask_mail import Message
-from app import db, bcrypt, mail
+from app import db, bcrypt, mail, login_manager
 from app.user.models import Post, Comment
 from . import user_bp
 from .models import User
@@ -28,6 +31,12 @@ def save_picture(form_picture):
     return picture_fn
 
 
+@login_manager.unauthorized_handler
+def unauthorized_callback():
+    flash('Авторизуйтесь, щоб отримати доступ', 'info')
+    return redirect(url_for('user_bp_in.login'))
+
+
 @user_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
@@ -39,6 +48,8 @@ def login():
         if user_in_db:
             if user_in_db.verify_password(form.password.data):
                 login_user(user_in_db, remember=form.remember.data)
+                session.permanent = True
+                current_app.permanent_session_lifetime = timedelta(seconds=5)
                 flash(f'Користувач успішно увійшов у свій аккаунт!', 'success')
                 next_page = request.args.get('next')
                 # print('next post', next_page)
