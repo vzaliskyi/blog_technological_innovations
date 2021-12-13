@@ -10,9 +10,10 @@ SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
 print('sqlite:///' + os.path.join(basedir, 'blog.db'))
 SQLALCHEMY_TRACK_MODIFICATIONS = True
 
-MAIL_SERVER = 'smtp.googlemail.com'
+MAIL_SERVER = 'smtp.gmail.com'
 MAIL_PORT = 587
 MAIL_USE_TLS = True
+MAIL_USE_SSL = False
 MAIL_USERNAME = 'team3member@gmail.com'
 MAIL_PASSWORD = 'tiMa$232'
 
