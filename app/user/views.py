@@ -31,10 +31,10 @@ def save_picture(form_picture):
     return picture_fn
 
 
-@login_manager.unauthorized_handler
-def unauthorized_callback():
-    flash('Авторизуйтесь, щоб отримати доступ', 'info')
-    return redirect(url_for('user_bp_in.login'))
+# @login_manager.unauthorized_handler
+# def unauthorized_callback():
+#     flash('Авторизуйтесь, щоб отримати доступ', 'info')
+#     return redirect(url_for('user_bp_in.login'))
 
 
 @user_bp.route('/login', methods=['GET', 'POST'])
