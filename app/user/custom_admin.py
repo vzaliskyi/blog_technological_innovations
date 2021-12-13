@@ -86,7 +86,7 @@ class UserModelView(ModelView):
                 self.session.delete(model)
                 self.session.commit()
                 return True
-        except Exception as ex:
+        except:
             self.session.rollback()
             return False
 
@@ -123,7 +123,7 @@ class CategoryModelView(ModelView):
                 self.session.delete(model)
                 self.session.commit()
                 return True
-        except Exception as ex:
+        except:
             self.session.rollback()
             return False
 
@@ -203,7 +203,7 @@ class PostModelView(ModelView):
                 self.session.delete(model)
                 self.session.commit()
                 return True
-        except Exception as ex:
+        except:
             self.session.rollback()
             return False
 
