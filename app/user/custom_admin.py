@@ -22,34 +22,6 @@ class MyHomeView(AdminIndexView):
 
 
 class UserModelView(ModelView):
-    def delete_model(self, model):
-        try:
-            posts = Post.query.filter_by(user_id=model.id)
-            if posts.first():
-                for post in posts:
-                    comments = Comment.query.filter_by(post_id=post.id)
-                    likes = Like.query.filter_by(post_id=post.id)
-                    if comments.first() or likes.first():
-                        for comment in comments:
-                            db.session.delete(comment)
-                        for like in likes:
-                            db.session.delete(like)
-                    db.session.delete(post)
-                self.session.delete(model)
-                self.session.commit()
-                return True
-            else:
-                self.session.delete(model)
-                self.session.commit()
-        except Exception as ex:
-            if not self.handle_view_exception(ex):
-                pass
-            self.session.rollback()
-            return False
-        else:
-            self.after_model_delete(model)
-        return True
-
     column_searchable_list = ('username',)
     column_sortable_list = ('username',)
     column_list = ('username', 'email', 'picture', 'admin',)
@@ -94,6 +66,30 @@ class UserModelView(ModelView):
               'danger')
         return redirect(url_for('home'))
 
+    def delete_model(self, model):
+        try:
+            posts = Post.query.filter_by(user_id=model.id)
+            if posts.first():
+                for post in posts:
+                    comments = Comment.query.filter_by(post_id=post.id)
+                    likes = Like.query.filter_by(post_id=post.id)
+                    if comments.first() or likes.first():
+                        for comment in comments:
+                            db.session.delete(comment)
+                        for like in likes:
+                            db.session.delete(like)
+                    db.session.delete(post)
+                self.session.delete(model)
+                self.session.commit()
+                return True
+            else:
+                self.session.delete(model)
+                self.session.commit()
+                return True
+        except Exception as ex:
+            self.session.rollback()
+            return False
+
 
 class CategoryModelView(ModelView):
     column_searchable_list = ('name',)
@@ -117,32 +113,22 @@ class CategoryModelView(ModelView):
               'danger')
         return redirect(url_for('home'))
 
-
-class PostModelView(ModelView):
     def delete_model(self, model):
         try:
-            comments = Comment.query.filter_by(post_id=model.id)
-            likes = Like.query.filter_by(post_id=model.id)
-            if comments.first() or likes.first():
-                for comment in comments:
-                    db.session.delete(comment)
-                for like in likes:
-                    db.session.delete(like)
-                self.session.delete(model)
-                self.session.commit()
-                return True
+            posts = Post.query.filter_by(category_id=model.id)
+            if posts.first():
+                flash('You cannot delete a category because there are posts'
+                      ' with this category', 'danger')
             else:
                 self.session.delete(model)
                 self.session.commit()
+                return True
         except Exception as ex:
-            if not self.handle_view_exception(ex):
-                pass
             self.session.rollback()
             return False
-        else:
-            self.after_model_delete(model)
-        return True
 
+
+class PostModelView(ModelView):
     def _content_formatter(view, context, model, name):
         # Format your string here e.g show first 20 characters
         # can return any valid HTML e.g. a link to another view to
@@ -200,6 +186,26 @@ class PostModelView(ModelView):
         flash('Немає доступу до цієї сторінки',
               'danger')
         return redirect(url_for('home'))
+
+    def delete_model(self, model):
+        try:
+            comments = Comment.query.filter_by(post_id=model.id)
+            likes = Like.query.filter_by(post_id=model.id)
+            if comments.first() or likes.first():
+                for comment in comments:
+                    db.session.delete(comment)
+                for like in likes:
+                    db.session.delete(like)
+                self.session.delete(model)
+                self.session.commit()
+                return True
+            else:
+                self.session.delete(model)
+                self.session.commit()
+                return True
+        except Exception as ex:
+            self.session.rollback()
+            return False
 
 
 class LikeModelView(ModelView):
