@@ -49,7 +49,7 @@ def login():
             if user_in_db.verify_password(form.password.data):
                 login_user(user_in_db, remember=form.remember.data)
                 session.permanent = True
-                current_app.permanent_session_lifetime = timedelta(seconds=5)
+                current_app.permanent_session_lifetime = timedelta(hours=3)
                 flash(f'Користувач успішно увійшов у свій аккаунт!', 'success')
                 next_page = request.args.get('next')
                 # print('next post', next_page)
