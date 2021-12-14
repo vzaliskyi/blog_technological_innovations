@@ -74,7 +74,9 @@ class RegistrationForm(FlaskForm):
                                    'від 3 до 30 симолів!'),
                     DataRequired(message='Заповніть це поле!'),
                     check_letters, check_digits,
-                    check_symbols, check_spaces]
+                    check_symbols, check_spaces],
+        render_kw={"placeholder": "велика та мала англійські літери, цифра,"
+                                  " спецсимвол"}
     )
     confirm_password = PasswordField(
         'Підтвердження паролю',
@@ -138,8 +140,12 @@ class AccountUpdateForm(FlaskForm):
                     ]
     )
     picture = FileField('Фото профілю',
-                        validators=[FileAllowed(['jpg', 'png', 'jpeg']),
-                                    check_file_size])
+                        validators=[
+                            FileAllowed(['jpg', 'png', 'jpeg'],
+                                        message='Файл повинен мати такі '
+                                                'розширення: .jpg, .png,'
+                                                ' .jpeg'),
+                            check_file_size])
     submit = SubmitField('Оновити')
 
     def validate_username(self, field):

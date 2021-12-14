@@ -2,19 +2,17 @@ import os
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-SECRET_KEY = 'supersecreeetkey'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 WTF_CRSF_ENAVLED = True
 # Database
-SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
-                          'sqlite:///' + os.path.join(basedir, 'blog.db')
-print('sqlite:///' + os.path.join(basedir, 'blog.db'))
+SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
 SQLALCHEMY_TRACK_MODIFICATIONS = True
 
 MAIL_SERVER = 'smtp.googlemail.com'
 MAIL_PORT = 587
 MAIL_USE_TLS = True
-MAIL_USERNAME = 'team3member@gmail.com'
-MAIL_PASSWORD = 'tiMa$232'
+MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
+MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
 
 # flask-msearch will use table name as elasticsearch index name unless set
 # __msearch_index__
