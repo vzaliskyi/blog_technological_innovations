@@ -4,6 +4,7 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_mail import Mail
 from flask_msearch import Search
+import os
 
 # app = Flask(__name__)
 # app.config.from_object('config')
@@ -18,6 +19,14 @@ def create_app(config_filename=None):
     app = Flask(__name__, instance_relative_config=True)
     with app.app_context():
         app.config.from_object('config')
+        if os.environ.get('FLASK_ENV') == 'development': # for local work
+            app.config.update(
+                SQLALCHEMY_DATABASE_URI=os.environ.get('DATABASE_URL_DEV')
+            )
+        else:  # for heroku work
+            app.config.update(
+                SQLALCHEMY_DATABASE_URI=os.environ.get('DATABASE_URL_PROD')
+            )
         db.init_app(app)
         bcrypt.init_app(app)
         login_manager.init_app(app)
