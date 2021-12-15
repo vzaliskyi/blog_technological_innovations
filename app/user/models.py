@@ -23,7 +23,7 @@ class User(db.Model, UserMixin):  # type: ignore
     # type: ignore
     email = db.Column(db.String(50), unique=True, nullable=False)
     # type: ignore
-    password = db.Column(db.String(30), nullable=False)
+    password = db.Column(db.String(70), nullable=False)
     # type: ignore
     picture = db.Column(db.String(20), nullable=False,
                         server_default='default.jpg')  # type: ignore

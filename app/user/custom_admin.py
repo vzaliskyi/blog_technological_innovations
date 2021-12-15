@@ -92,6 +92,9 @@ class UserModelView(ModelView):
 
 
 class CategoryModelView(ModelView):
+    can_create = False
+    can_edit = False
+    can_delete = False
     column_searchable_list = ('name',)
     column_sortable_list = ('name',)
     column_list = ('name',)
