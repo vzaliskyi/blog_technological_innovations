@@ -70,13 +70,13 @@ class RegistrationForm(FlaskForm):
     password = PasswordField(
         'Пароль',
         validators=[Length(min=8, max=30,
-                           message='Поле повинно бути довжиною '
-                                   'від 3 до 30 симолів!'),
+                           message='Пароль повинен бути довжиною від 8 до 30 '
+                                   'симолів!'),
                     DataRequired(message='Заповніть це поле!'),
                     check_letters, check_digits,
                     check_symbols, check_spaces],
-        render_kw={"placeholder": "велика та мала англійські літери, цифра,"
-                                  " спецсимвол"}
+        render_kw={"placeholder": "повинен включати велику та малу літери,"
+                                  " цифру та спецсимвол"}
     )
     confirm_password = PasswordField(
         'Підтвердження паролю',
@@ -97,11 +97,11 @@ class RegistrationForm(FlaskForm):
 
 
 class RequestPasswordResetForm(FlaskForm):
-    email = StringField("Введіть email, що прив'язаний до вашого акаунту:",
+    email = StringField("Email",
                         validators=[DataRequired(message='Заповніть це поле!'),
                                     Email(message='Некоректна email адреса!')]
                         )
-    submit = SubmitField('Надіслати лист для скидання паролю')
+    submit = SubmitField('Надіслати')
 
     def validate_email(self, field):
         if not User.query.filter_by(email=field.data).first():
@@ -113,8 +113,8 @@ class ResetPasswordForm(FlaskForm):
     new_password = PasswordField(
         'Новий пароль',
         validators=[Length(min=8, max=30,
-                           message='Поле повинно бути довжиною '
-                                   'від 3 до 30 симолів!'),
+                           message='Пароль повинен бути довжиною від 8 до 30 '
+                                   'симолів!'),
                     DataRequired(message='Заповніть це поле!'),
                     check_letters, check_digits,
                     check_symbols, check_spaces]
@@ -142,9 +142,9 @@ class AccountUpdateForm(FlaskForm):
     picture = FileField('Фото профілю',
                         validators=[
                             FileAllowed(['jpg', 'png', 'jpeg'],
-                                        message='Файл повинен мати такі '
-                                                'розширення: .jpg, .png,'
-                                                ' .jpeg'),
+                                        message='Файл повинен мати одне з '
+                                                'наступних розширень: '
+                                                '.jpg, .png, .jpeg'),
                             check_file_size])
     submit = SubmitField('Оновити')
 

@@ -279,7 +279,7 @@ a.post-created-at{
 
 .short-form{
     margin:auto;
-    width:35%;
+    width:41%;
 }
 
 .separator {
@@ -323,13 +323,18 @@ a.post-created-at{
 
 .media-block{
     display: block;
-  -webkit-transition: 0.5s;
+    -webkit-transition: 0.5s;
       transition: 0.5s;
 }
 
 .media-block:hover{
-  background: #f8f9fa;
-  -webkit-transform: scale(1.05);
-          transform: scale(1.05);
+    background: #f8f9fa;
+    -webkit-transform: scale(1.05);
+        transform: scale(1.05);
 }
 
+.default-posts-list{
+    margin:auto;
+    width:60%;
+    word-break:break-all;
+}
