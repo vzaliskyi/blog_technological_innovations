@@ -279,5 +279,3 @@ class TestsCRUD(BaseTestCase):
                     self.assert404(response)
                 else:
                     self.assert403(response)
-
-
