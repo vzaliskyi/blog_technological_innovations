@@ -2,7 +2,7 @@
 {% block main %}
   {% from "_render_field.html" import render_post_item, pagination_block_id, render_sorting_menu_id  %}
 
-  <div class="card p-2" style="margin:auto;width:60%">
+  <div class="default-posts-list">
       <legend class="border-bottom mb-4" align="center">Категорія
         <b class="text-uppercase">{{posts.items[0].category_br.name}}
           {% if posts.items[0] %}

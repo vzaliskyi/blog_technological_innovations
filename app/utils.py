@@ -7,7 +7,8 @@ def sort_posts(posts, sort_by):
         print('best')
         return posts.order_by(
             (Post.total_likes - Post.total_dislikes).desc(),
-            Post.total_likes.desc()
+            Post.total_likes.desc(),
+            Post.created_at.desc()
         )
     elif sort_by == 'oldest':
         # print('oldest')

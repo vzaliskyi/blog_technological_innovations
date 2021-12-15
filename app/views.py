@@ -1,7 +1,5 @@
-from app import db
-from app.user.models import User, Comment, Like, Post
-from flask import render_template, redirect, url_for, request, flash, \
-    current_app as app
+from app.user.models import Post
+from flask import render_template, request, current_app as app
 from app.utils import handle_posts_view
 
 

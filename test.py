@@ -116,7 +116,7 @@ class TestLoginRegistration(BaseTestCase):
                             in response.get_data(as_text=True))
             self.assertTrue('Некоректна email адреса!'
                             in response.get_data(as_text=True))
-            self.assertTrue('Поле повинно бути довжиною від 3 до 30 симолів!'
+            self.assertTrue('Пароль повинен бути довжиною від 8 до 30 симолів!'
                             in response.get_data(as_text=True))
             self.assertTrue('Пароль повинен містити великі та малі літери'
                             in response.get_data(as_text=True))
