@@ -19,7 +19,7 @@ def create_app(config_filename=None):
     app = Flask(__name__, instance_relative_config=True)
     with app.app_context():
         app.config.from_object('config')
-        if os.environ.get('FLASK_ENV') == 'development': # for local work
+        if os.environ.get('FLASK_ENV') == 'development':  # for local work
             app.config.update(
                 SQLALCHEMY_DATABASE_URI=os.environ.get('DATABASE_URL_DEV')
             )
